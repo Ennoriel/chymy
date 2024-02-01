@@ -1,0 +1,53 @@
+{
+	"name": "chymy",
+	"version": "0.0.1",
+	"description": "scraping library",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "rollup -c",
+		"changeset": "changeset",
+		"lint": "eslint --ignore-path .gitignore .",
+		"prettier": "prettier --write .",
+		"test": "jest"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/Ennoriel/chymy.git"
+	},
+	"keywords": [
+		"typescript"
+	],
+	"author": "Maxime Dupont",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Ennoriel/chymy/issues"
+	},
+	"homepage": "https://github.com/Ennoriel/chymy",
+	"dependencies": {
+		"chyme": "^2.0.1",
+		"node-html-parser": "^6.1.12"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.27.1",
+		"@rollup/plugin-commonjs": "^25.0.7",
+		"@rollup/plugin-node-resolve": "^15.2.3",
+		"@rollup/plugin-typescript": "^11.1.6",
+		"@types/jest": "^29.5.11",
+		"@types/node": "^20.11.14",
+		"@typescript-eslint/eslint-plugin": "^6.20.0",
+		"@typescript-eslint/parser": "^6.20.0",
+		"eslint": "^8.56.0",
+		"eslint-config-prettier": "^9.1.0",
+		"jest": "^29.7.0",
+		"jest-environment-jsdom": "^29.7.0",
+		"prettier": "^3.2.4",
+		"rollup": "^4.9.6",
+		"rollup-plugin-dts": "^6.1.0",
+		"ts-jest": "^29.1.2",
+		"tslib": "^2.6.2",
+		"typescript": "^5.3.3"
+	},
+	"type": "module"
+}

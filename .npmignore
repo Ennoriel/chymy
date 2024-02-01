@@ -1,0 +1,14 @@
+/.changeset
+/.github
+/coverage
+/src
+.eslintignore
+.eslintrc.js
+.gitignore
+.npmignore
+.prettierignore
+.prettierrc.json
+jest.config.js
+pnpm-lock.yaml
+rollup.config.js
+tsconfig.json
