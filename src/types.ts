@@ -18,6 +18,12 @@ type RuleAttributes = {
 	selector: string;
 };
 
+// requires a string, returns a string
+type RuleFormat = {
+	method: 'format';
+	selector: (str: string) => string;
+};
+
 // requires a string, returns a string or undefined
 type RuleRegExp = {
 	method: 'regexp';
@@ -34,6 +40,7 @@ type RuleDate = {
 	method: 'date';
 };
 
+// requires an object
 type RuleProject = {
 	method: 'project';
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,6 +58,7 @@ export type RuleAttribute =
 	| RuleRegExp
 	| RuleParseInt
 	| RuleAttributes
+	| RuleFormat
 	| RuleDate
 	| DefaultValue;
 

@@ -142,6 +142,10 @@ const config: ProcessConfigArray = [
 				selector: 'title'
 			},
 			{
+				method: 'format',
+				selector: (str) => `${str}Z`
+			},
+			{
 				method: 'date'
 			}
 		]

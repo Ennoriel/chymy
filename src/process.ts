@@ -58,6 +58,8 @@ export function parseRuleAttribute(accumulator: ParsedType, rule: RuleAttribute,
 				return parseInt(accumulator) || undefined;
 			case 'date':
 				return new Date(accumulator);
+			case 'format':
+				return rule.selector(accumulator);
 		}
 	} else if (accumulator && typeof accumulator === 'object' && 'querySelector' in accumulator) {
 		switch (rule.method) {

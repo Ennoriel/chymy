@@ -5,7 +5,7 @@ export const yCombinatorProcessed = [
 		link: 'https://hydrogenaud.io/index.php/topic,125248.0.html?PHPSESSID=su12fvq4ar7cordpr8p1uoa7p0',
 		source: 'hydrogenaud.io',
 		by: 'HakanAbbas',
-		date: '2024-01-02T04:43:06.000Z',
+		date: '2024-01-02T05:43:06.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38838531,
@@ -20,7 +20,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.ycombinator.com/companies/laylo/jobs/x3d7mtv-live-events-music-account-executive',
 		source: 'ycombinator.com',
 		by: undefined,
-		date: '2024-01-03T20:01:04.000Z',
+		date: '2024-01-03T21:01:04.000Z',
 		type: 'job',
 		stat: {
 			newsId: 38859850,
@@ -36,7 +36,7 @@ export const yCombinatorProcessed = [
 		link: 'https://arxiv.org/abs/2310.20360',
 		source: 'arxiv.org',
 		by: 'Anon84',
-		date: '2024-01-01T17:46:08.000Z',
+		date: '2024-01-01T18:46:08.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38834244,
@@ -51,7 +51,7 @@ export const yCombinatorProcessed = [
 		link: 'item?id=37852711',
 		source: undefined,
 		by: 'actinium226',
-		date: '2023-10-12T00:10:00.000Z',
+		date: '2023-10-12T02:10:00.000Z',
 		type: 'ask',
 		stat: {
 			newsId: 37852711,
@@ -66,7 +66,7 @@ export const yCombinatorProcessed = [
 		link: 'https://axleos.com/writing-a-truetype-font-renderer/',
 		source: 'axleos.com',
 		by: 'codyd51',
-		date: '2024-01-01T17:01:54.000Z',
+		date: '2024-01-01T18:01:54.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38833747,
@@ -81,7 +81,7 @@ export const yCombinatorProcessed = [
 		link: 'https://nerv.app/en/',
 		source: 'nerv.app',
 		by: 'spike021',
-		date: '2024-01-01T20:16:27.000Z',
+		date: '2024-01-01T21:16:27.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38835419,
@@ -96,7 +96,7 @@ export const yCombinatorProcessed = [
 		link: 'https://arxiv.org/abs/2312.01479',
 		source: 'arxiv.org',
 		by: 'saeedesmaili',
-		date: '2024-01-01T14:16:32.000Z',
+		date: '2024-01-01T15:16:32.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38832317,
@@ -111,7 +111,7 @@ export const yCombinatorProcessed = [
 		link: 'https://fiziko.bureau42.com/teaching_tidbits/manual_logarithms.pdf',
 		source: 'bureau42.com',
 		by: 'mindcrime',
-		date: '2024-01-01T22:50:56.000Z',
+		date: '2024-01-01T23:50:56.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38836437,
@@ -126,7 +126,7 @@ export const yCombinatorProcessed = [
 		link: 'https://erikmcclure.com/blog/we-could-fix-everything-we-just-dont/',
 		source: 'erikmcclure.com',
 		by: 'xena',
-		date: '2024-01-02T02:51:12.000Z',
+		date: '2024-01-02T03:51:12.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38837888,
@@ -141,7 +141,7 @@ export const yCombinatorProcessed = [
 		link: 'https://thisisimportant.net/posts/content-as-a-graph/',
 		source: 'thisisimportant.net',
 		by: 'serverlessmom',
-		date: '2024-01-01T18:52:04.000Z',
+		date: '2024-01-01T19:52:04.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38834780,
@@ -156,7 +156,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.garshol.priv.no/blog/376.html',
 		source: 'garshol.priv.no',
 		by: 'geox',
-		date: '2024-01-01T05:40:31.000Z',
+		date: '2024-01-01T06:40:31.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38830103,
@@ -171,7 +171,7 @@ export const yCombinatorProcessed = [
 		link: 'https://nyheritage.contentdm.oclc.org/digital/collection/p16694coll20/id/35/',
 		source: 'oclc.org',
 		by: '1970-01-01',
-		date: '2024-01-01T16:33:11.000Z',
+		date: '2024-01-01T17:33:11.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38833497,
@@ -186,7 +186,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.methodsandtools.com/archive/archive.php?id=39',
 		source: 'methodsandtools.com',
 		by: 'rramadass',
-		date: '2023-12-31T03:10:47.000Z',
+		date: '2023-12-31T04:10:47.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38821708,
@@ -201,7 +201,7 @@ export const yCombinatorProcessed = [
 		link: 'https://github.com/iorate/ublacklist',
 		source: 'github.com/iorate',
 		by: 'st_goliath',
-		date: '2024-01-01T20:05:45.000Z',
+		date: '2024-01-01T21:05:45.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38835345,
@@ -216,7 +216,7 @@ export const yCombinatorProcessed = [
 		link: 'https://github.com/adaptive-scale/dbchaos',
 		source: 'github.com/adaptive-scale',
 		by: 'debarshri',
-		date: '2024-01-01T15:45:57.000Z',
+		date: '2024-01-01T16:45:57.000Z',
 		type: 'show',
 		stat: {
 			newsId: 38833113,
@@ -232,7 +232,7 @@ export const yCombinatorProcessed = [
 		link: 'https://litestream.io/',
 		source: 'litestream.io',
 		by: 'selvan',
-		date: '2024-01-02T02:48:23.000Z',
+		date: '2024-01-02T03:48:23.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38837870,
@@ -247,7 +247,7 @@ export const yCombinatorProcessed = [
 		link: 'https://github.com/abolinsky/Hook',
 		source: 'github.com/abolinsky',
 		by: 'fercircularbuf',
-		date: '2024-01-02T00:15:47.000Z',
+		date: '2024-01-02T01:15:47.000Z',
 		type: 'show',
 		stat: {
 			newsId: 38836998,
@@ -262,7 +262,7 @@ export const yCombinatorProcessed = [
 		link: 'https://standardebooks.org/',
 		source: 'standardebooks.org',
 		by: 'pauloxnet',
-		date: '2024-01-01T10:51:35.000Z',
+		date: '2024-01-01T11:51:35.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38831219,
@@ -277,7 +277,7 @@ export const yCombinatorProcessed = [
 		link: 'https://dubroy.com/blog/getting-things-done-in-small-increments/',
 		source: 'dubroy.com',
 		by: 'begueradj',
-		date: '2023-12-31T09:22:03.000Z',
+		date: '2023-12-31T10:22:03.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38823002,
@@ -292,7 +292,7 @@ export const yCombinatorProcessed = [
 		link: 'https://github.com/html5-ninja/page-replica',
 		source: 'github.com/html5-ninja',
 		by: 'nirvanist',
-		date: '2024-01-01T14:09:50.000Z',
+		date: '2024-01-01T15:09:50.000Z',
 		type: 'show',
 		stat: {
 			newsId: 38832257,
@@ -308,7 +308,7 @@ export const yCombinatorProcessed = [
 		link: 'https://github.com/zigcc/zig-cookbook',
 		source: 'github.com/zigcc',
 		by: 'asicsp',
-		date: '2024-01-02T02:37:04.000Z',
+		date: '2024-01-02T03:37:04.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38837807,
@@ -323,7 +323,7 @@ export const yCombinatorProcessed = [
 		link: 'https://odin-lang.org/',
 		source: 'odin-lang.org',
 		by: 'tuananh',
-		date: '2024-01-01T23:04:11.000Z',
+		date: '2024-01-02T00:04:11.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38836512,
@@ -338,7 +338,7 @@ export const yCombinatorProcessed = [
 		link: 'https://deprogrammaticaipsum.com/return-to-innocence/',
 		source: 'deprogrammaticaipsum.com',
 		by: 'ingve',
-		date: '2024-01-01T05:58:34.000Z',
+		date: '2024-01-01T06:58:34.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38830159,
@@ -353,7 +353,7 @@ export const yCombinatorProcessed = [
 		link: 'https://publicdomainreview.org/blog/2024/01/public-domain-day-2024/',
 		source: 'publicdomainreview.org',
 		by: 'sacrosanct',
-		date: '2024-01-01T15:57:10.000Z',
+		date: '2024-01-01T16:57:10.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38833208,
@@ -368,7 +368,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.fullcircuit.com/blog/fixing-annoying-blue-standby-lights',
 		source: 'fullcircuit.com',
 		by: 'ghr',
-		date: '2024-01-01T08:55:51.000Z',
+		date: '2024-01-01T09:55:51.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38830782,
@@ -383,7 +383,7 @@ export const yCombinatorProcessed = [
 		link: 'https://inference-review.com/article/wacky-jabber',
 		source: 'inference-review.com',
 		by: 'andy_herbert',
-		date: '2024-01-01T15:46:11.000Z',
+		date: '2024-01-01T16:46:11.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38833115,
@@ -398,7 +398,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.wgbh.org/lifestyle/2018-03-06/why-is-there-a-strand-of-dna-on-massachusetts-license-plates',
 		source: 'wgbh.org',
 		by: 'ripe',
-		date: '2024-01-01T23:52:32.000Z',
+		date: '2024-01-02T00:52:32.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38836849,
@@ -413,7 +413,7 @@ export const yCombinatorProcessed = [
 		link: 'https://blog.aaronballman.com/2023/12/musings-on-the-c-charter/',
 		source: 'aaronballman.com',
 		by: 'steveklabnik',
-		date: '2024-01-01T21:42:58.000Z',
+		date: '2024-01-01T22:42:58.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38835994,
@@ -428,7 +428,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.zsh.org/mla/users/2011/msg00095.html',
 		source: 'zsh.org',
 		by: '0x45696e6172',
-		date: '2023-12-31T10:34:24.000Z',
+		date: '2023-12-31T11:34:24.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38823332,
@@ -443,7 +443,7 @@ export const yCombinatorProcessed = [
 		link: 'https://www.eff.org/deeplinks/2023/12/year-review-googles-corporate-paternalism-browser',
 		source: 'eff.org',
 		by: 'rickcarlino',
-		date: '2024-01-01T20:17:56.000Z',
+		date: '2024-01-01T21:17:56.000Z',
 		type: 'story',
 		stat: {
 			newsId: 38835435,
