@@ -10,5 +10,8 @@ module.exports = {
 			statements: 90,
 			functions: 100
 		}
+	},
+	globals: {
+		fetch: global.fetch
 	}
 };

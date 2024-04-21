@@ -47,9 +47,13 @@ type RuleProject = {
 	selector: (object: any) => ParsedRecord;
 };
 
-type DefaultValue = {
+type RuleDefaultValue = {
 	method: 'default';
 	selector: ParsedType;
+};
+
+type RuleLog = {
+	method: 'log';
 };
 
 export type RuleAttribute =
@@ -60,7 +64,8 @@ export type RuleAttribute =
 	| RuleAttributes
 	| RuleFormat
 	| RuleDate
-	| DefaultValue;
+	| RuleDefaultValue
+	| RuleLog;
 
 export type RuleObject = RuleProject;
 
@@ -82,26 +87,39 @@ export type ProcessConfigObject = BaseProcessConfig & {
 };
 
 type BaseScrapFrom = {
+	format: 'html' | 'xml';
+};
+
+type ScrapFromTypeIndex = {
+	xtype: 'index';
 	fromIndex: number;
 	toIndex: number;
-	format: 'html';
+	page: (page: number) => string;
 };
 
-export type DownloadScrapFrom = BaseScrapFrom & {
-	type: 'download';
-	url: (page: number) => string;
-	wait?: number;
+type ScrapFromTypeArray = {
+	xtype: 'array';
+	pages: Array<string>;
 };
 
-export type ReadFileScrapFrom = BaseScrapFrom & {
-	type: 'read-file';
-	path: (page: number) => string;
-};
+type ScrapFromType = ScrapFromTypeIndex | ScrapFromTypeArray;
+
+export type DownloadScrapFrom = BaseScrapFrom &
+	ScrapFromType & {
+		type: 'download';
+		wait?: number;
+	};
+
+export type ReadFileScrapFrom = BaseScrapFrom &
+	ScrapFromType & {
+		type: 'read-file';
+	};
 
 export type ScrapFrom = DownloadScrapFrom | ReadFileScrapFrom;
 
 export type ScrapProcess = {
 	type: 'scrap';
+	keepPage?: boolean;
 	fromIndex: number;
 	toIndex: number;
 	config: ProcessConfigArray;

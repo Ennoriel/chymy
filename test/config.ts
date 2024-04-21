@@ -1,4 +1,4 @@
-import type { ProcessConfigArray, Scrap } from '../src/types';
+import type { ProcessConfigArray } from '../src/types';
 
 const config: ProcessConfigArray = [
 	{
@@ -218,20 +218,19 @@ const config: ProcessConfigArray = [
 	}
 ];
 
-export const scrapRule: Scrap = {
-	name: 'y-combinator',
-
+export const scrapRule = {
 	from: {
-		type: 'download',
-		url: (p) => `https://news.ycombinator.com/?p=${p}`,
+		type: 'download' as const,
+		xtype: 'index' as const,
+		page: (p: number) => `https://news.ycombinator.com/?p=${p}`,
 		fromIndex: 1,
 		toIndex: 2,
 		wait: 5000,
-		format: 'html'
+		format: 'html' as const
 	},
 
 	process: {
-		type: 'scrap',
+		type: 'scrap' as const,
 		fromIndex: 0,
 		toIndex: 29,
 		config

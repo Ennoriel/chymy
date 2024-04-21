@@ -12,15 +12,18 @@ import {
 import { parse } from 'node-html-parser';
 
 export function handleProcess(
-	data: { page: number; content: string }[],
+	data: { page: string; content: string }[],
 	processRule: ScrapProcess
 ) {
 	const parsedValues = [];
 
-	for (const { content } of data) {
+	for (const { content, page } of data) {
 		const root = parse(content);
 		for (let index = processRule.fromIndex; index <= processRule.toIndex; index++) {
-			parsedValues.push(processRules(processRule.config, index, root));
+			parsedValues.push({
+				page: processRule.keepPage ? page : undefined,
+				...processRules(processRule.config, index, root)
+			});
 		}
 	}
 
@@ -38,6 +41,7 @@ export function processRules(config: ProcessConfigArray, index: number, root: HT
 					root
 				)
 			])
+			.filter(([, v]) => Boolean(v))
 	);
 
 	return config
@@ -48,7 +52,9 @@ export function processRules(config: ProcessConfigArray, index: number, root: HT
 }
 
 export function parseRuleAttribute(accumulator: ParsedType, rule: RuleAttribute, index: number) {
-	if (rule.method === 'default') {
+	if (rule.method === 'log') {
+		return accumulator;
+	} else if (rule.method === 'default') {
 		return accumulator ?? rule.selector;
 	} else if (typeof accumulator === 'string') {
 		switch (rule.method) {
@@ -65,7 +71,19 @@ export function parseRuleAttribute(accumulator: ParsedType, rule: RuleAttribute,
 		switch (rule.method) {
 			case 'querySelector': {
 				const _index = rule.index ? rule.index(index) : index;
-				return accumulator.querySelector(rule.selector(_index)) || undefined;
+				try {
+					return accumulator.querySelector(rule.selector(_index)) || undefined;
+				} catch (e) {
+					console.log(
+						'error while processing rule querySelector with index:',
+						index,
+						'and selector:',
+						rule.selector(_index),
+						'.',
+						e
+					);
+					return undefined;
+				}
 			}
 			case 'text':
 				return accumulator.text.trim();
