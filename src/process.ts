@@ -20,10 +20,9 @@ export function handleProcess(
 	for (const { content, page } of data) {
 		const root = parse(content);
 		for (let index = processRule.fromIndex; index <= processRule.toIndex; index++) {
-			parsedValues.push({
-				page: processRule.keepPage ? page : undefined,
-				...processRules(processRule.config, index, root)
-			});
+			const result = processRules(processRule.config, index, root)
+			if (result && processRule.keepPage) result.page = page
+			parsedValues.push(result);
 		}
 	}
 
@@ -41,7 +40,7 @@ export function processRules(config: ProcessConfigArray, index: number, root: HT
 					root
 				)
 			])
-			.filter(([, v]) => Boolean(v))
+			.filter(([, v]) => v !== undefined)
 	);
 
 	return config

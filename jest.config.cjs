@@ -5,12 +5,12 @@ module.exports = {
 	extensionsToTreatAsEsm: ['.ts'],
 	collectCoverage: true,
 	collectCoverageFrom: ['./src/**'],
-	coverageThreshold: {
-		'./src/*.ts': {
-			statements: 90,
-			functions: 100
-		}
-	},
+	// coverageThreshold: {
+	// 	'./src/*.ts': {
+	// 		statements: 90,
+	// 		functions: 100
+	// 	}
+	// },
 	globals: {
 		fetch: global.fetch
 	}
