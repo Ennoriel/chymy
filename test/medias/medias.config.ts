@@ -3,8 +3,13 @@ import { medias } from './medias.data';
 
 const config = [
 	{
+		name: 'preprocess',
+		from: 'preprocess',
+		method: "parseHtml"
+	},
+	{
 		name: 'title',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -17,7 +22,7 @@ const config = [
 	},
 	{
 		name: 'rss_fromLink',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -32,7 +37,7 @@ const config = [
 	},
 	{
 		name: 'rss_fromA',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',

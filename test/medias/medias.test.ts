@@ -31,7 +31,7 @@ describe('medias', () => {
 		// console.log(a)
 
 		const b = new Error('b', { cause: a });
-		console.log(convertErrorToPlainObject(b), null, 2);
-		console.log(JSON.stringify(convertErrorToPlainObject(b), null, 2));
+		// console.log(convertErrorToPlainObject(b), null, 2);
+		// console.log(JSON.stringify(convertErrorToPlainObject(b), null, 2));
 	});
 });

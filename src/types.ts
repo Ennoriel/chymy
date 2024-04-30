@@ -1,5 +1,19 @@
 import { HTMLElement } from 'node-html-parser';
 
+// requires a string, returns a HTMLElement or undefined
+type RuleStringToHtml = {
+	method: 'parseHtml';
+};
+
+// requires a string, returns an object or undefined
+type RuleStringToXml = {
+	method: 'parseXml';
+};
+
+export type RulePreprocess =
+	| RuleStringToHtml
+	| RuleStringToXml
+
 // requires a HTMLElement, returns a HTMLElement or undefined
 type RuleQuerySelector = {
 	method: 'querySelector';
@@ -69,15 +83,19 @@ export type RuleAttribute =
 
 export type RuleObject = RuleProject;
 
-export type ProcessConfig = ProcessConfigHtml | ProcessConfigObject;
+export type ProcessConfig = ProcessConfigPreprocess | ProcessConfigAttribute | ProcessConfigObject;
 export type ProcessConfigArray = Array<ProcessConfig>;
 
 type BaseProcessConfig = {
 	name: string;
 };
 
-export type ProcessConfigHtml = BaseProcessConfig & {
-	from: 'html';
+export type ProcessConfigPreprocess = BaseProcessConfig & {
+	from: 'preprocess';
+} & RulePreprocess;
+
+export type ProcessConfigAttribute = BaseProcessConfig & {
+	from: 'attribute';
 	rules: Array<RuleAttribute>;
 };
 

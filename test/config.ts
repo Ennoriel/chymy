@@ -2,8 +2,13 @@ import type { ProcessConfigArray } from '../src/types';
 
 const config: ProcessConfigArray = [
 	{
+		name: 'preprocess',
+		from: 'preprocess',
+		method: "parseHtml"
+	},
+	{
 		name: 'id',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -16,12 +21,12 @@ const config: ProcessConfigArray = [
 			},
 			{
 				method: 'parseInt'
-			}
+			},
 		]
 	},
 	{
 		name: 'rank',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -42,7 +47,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'title',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -57,7 +62,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'link',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -73,7 +78,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'source',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -88,7 +93,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'score',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -114,7 +119,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'by',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -129,7 +134,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'date',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -152,7 +157,7 @@ const config: ProcessConfigArray = [
 	},
 	{
 		name: 'comments',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',

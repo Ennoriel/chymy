@@ -1,15 +1,18 @@
-import { HTMLElement } from 'node-html-parser';
 import {
 	ParsedType,
 	RuleAttribute,
 	RuleObject,
-	ProcessConfigHtml,
+	ProcessConfigAttribute,
 	ProcessConfigObject,
 	ProcessConfigArray,
 	ParsedRecord,
-	ScrapProcess
+	ScrapProcess,
+	ProcessConfigPreprocess
 } from './types';
 import { parse } from 'node-html-parser';
+import { XMLParser } from 'fast-xml-parser'
+
+const xmlParser = new XMLParser();
 
 export function handleProcess(
 	data: { page: string; content: string }[],
@@ -18,9 +21,8 @@ export function handleProcess(
 	const parsedValues = [];
 
 	for (const { content, page } of data) {
-		const root = parse(content);
 		for (let index = processRule.fromIndex; index <= processRule.toIndex; index++) {
-			const result = processRules(processRule.config, index, root)
+			const result = processRules(processRule.config, index, content)
 			if (result && processRule.keepPage) result.page = page
 			parsedValues.push(result);
 		}
@@ -29,10 +31,15 @@ export function handleProcess(
 	return parsedValues;
 }
 
-export function processRules(config: ProcessConfigArray, index: number, root: HTMLElement) {
+export function processRules(config: ProcessConfigArray, index: number, content: string) {
+
+	const root = config
+		.filter((configItem): configItem is ProcessConfigPreprocess => configItem.from === 'preprocess')
+		.reduce<ParsedType>((accumulator, configItem) => parseStepPreprocess(accumulator, configItem), content)
+
 	const object = Object.fromEntries(
 		config
-			.filter((configItem): configItem is ProcessConfigHtml => configItem.from === 'html')
+			.filter((configItem): configItem is ProcessConfigAttribute => configItem.from === 'attribute')
 			.map(({ name, rules }) => [
 				name,
 				rules.reduce<ParsedType>(
@@ -50,8 +57,18 @@ export function processRules(config: ProcessConfigArray, index: number, root: HT
 		.reduce((accumulator, rule) => parseRuleObject(accumulator, rule), object as ParsedRecord);
 }
 
+export function parseStepPreprocess(accumulator: ParsedType, step: ProcessConfigPreprocess) {
+	if (step.method === "parseHtml" && typeof accumulator === 'string') {
+		return parse(accumulator)
+	} else if (step.method === "parseXml" && typeof accumulator === 'string') {
+		return xmlParser.parse(accumulator)
+	}
+	return undefined
+}
+
 export function parseRuleAttribute(accumulator: ParsedType, rule: RuleAttribute, index: number) {
 	if (rule.method === 'log') {
+		console.log(accumulator)
 		return accumulator;
 	} else if (rule.method === 'default') {
 		return accumulator ?? rule.selector;

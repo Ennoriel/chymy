@@ -103,7 +103,6 @@ describe('from', () => {
 
 	it(handleProcess.name, () => {
 		const result = handleProcess([{ page: "1", content: mockYNews }], scrapRule.process);
-
 		expect(result).toStrictEqual(yCombinatorProcessed);
 	});
 });

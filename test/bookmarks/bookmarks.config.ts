@@ -3,8 +3,13 @@ import { bookmarks } from './bookmarks.data';
 
 const config = [
 	{
+		name: 'preprocess',
+		from: 'preprocess',
+		method: "parseHtml"
+	},
+	{
 		name: 'title',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -17,7 +22,7 @@ const config = [
 	},
 	{
 		name: 'description',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -31,7 +36,7 @@ const config = [
 	},
 	{
 		name: 'description',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -45,7 +50,7 @@ const config = [
 	},
 	{
 		name: 'image',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -59,7 +64,7 @@ const config = [
 	},
 	{
 		name: 'language',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
@@ -73,7 +78,7 @@ const config = [
 	},
 	{
 		name: 'author',
-		from: 'html',
+		from: 'attribute',
 		rules: [
 			{
 				method: 'querySelector',
