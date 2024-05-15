@@ -1,73 +1,48 @@
-# chymy
+- [x] meta rules
+  - [x] IterateRule
+  - [x] SequenceRule
+  - [x] RecordRule
 
-> Typescript web scraping utils
+- [x] action rules
+  - [x] RuleDownload
+  - [x] RuleReadFromFile
+  - [x] RuleWriteToFile
+    - [ ] create folder if does not exist
+  - [x] RuleLog
 
-All the methods are typed, documented and tested
+- [x] HTML
+  - [x] RuleQuerySelector
+  - [x] RuleText
+  - [x] RuleAttributes
 
-## documentation
+- [x] String
+  - [x] RuleRegExp
+  - [x] RuleParseInt
+  - [x] RuleDate
+  - [x] RuleParseToHtml
+  - [x] RuleParseAsXml
+  - [x] RuleParseAsJson
 
-### `handleFrom`
+- [x] Object
+  - [x] IdentityRule
+  - [x] DefaultRule
+  - [x] ProjectRule
 
-Allows to get data from a source:
+- [ ] array
+  - [ ] sort
+  - [ ] dedupe
+  - [ ] flat
 
-- fetch
-- read file
+- [ ] accessors
+  - [ ] RuleWriteToFile
 
-### `handleProcess`
+- [ ] response ??
+  - [ ] text()
+  - [ ] json()
 
-Allows to parse data with a config in this order:
+- [ ] combos
+  - [ ] html-query-selector + html-text
+  - [ ] record > string = record > project ??
 
-1. all string, xml and html rules in order
-2. the object rules
-
-## TODO
-
-- [ ] create folder if it does not exist
-- [ ] change writeFileSync file extension based on file type (add .xml)
-- [ ] verify that:
-  - [ ] a rule has only one preprocess step
-  - [ ] each step has the correct input
-
-```mermaid
-stateDiagram-v2
-    state if_state <<choice>>
-    state "Gekii" as First
-    [*] --> First: text hyper realistic
-    state First {
-        Still --> Moving
-        Moving --> if_state
-        if_state --> Crash: if n < 0
-    }
-    if_state --> [*] : if n >= 0
-    Still --> [*]
-    Crash --> [*]
-```
-
-```mermaid
-stateDiagram-v2
-  state if_type <<choice>>
-  state "getPages()" as download.getPages
-  state "getPages()" as readFile.getPages
-  state "await content.text()" as response.text
-
-  [*] --> if_type
-  state handleFrom() {
-    if_type --> ruleDownload(): type = "download"
-    ruleDownload() --> download.getPages
-    download.getPages --> fetch()
-    fetch() --> response.text
-
-    if_type --> ruleReadFile(): type = "read-file"
-    ruleReadFile() --> readFile.getPages
-    readFile.getPages --> readFileSync()
-    readFileSync() --> file.toString()
-  }
-  
-  response.text --> handleProcess()
-  file.toString() --> handleProcess()
-  
-  state handleProcess() {
-    preprocess --> attributes
-    attributes --> object
-  }
-```
+- [ ] exceptions / undefined
+  - [ ] html-query-selector + html-text plante si html-query-selector ne remonte rien
