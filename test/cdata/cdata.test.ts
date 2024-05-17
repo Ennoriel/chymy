@@ -52,7 +52,6 @@ describe('cdata', () => {
 
 	cases.forEach(({ media, cdata, description, image }) => {
 		it(`${media} CDATA should be decoded`, async () => {
-			console.log(await parse(config, cdata));
 			expect(await parse(config, cdata)).toStrictEqual({ description, image });
 		});
 	});

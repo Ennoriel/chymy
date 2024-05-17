@@ -24,6 +24,12 @@ export type LogRule = {
 	method: 'log';
 };
 
+// Response rules
+export type ResponseDecodeRule = {
+	method: 'response-decode';
+	encoding?: MaybeMethod<string | undefined>;
+};
+
 // HTML rules
 export type HtmlQuerySelectorRule = {
 	method: 'html-query-selector';
@@ -60,7 +66,6 @@ export type DateRule = {
 
 export type ParseToHtmlRule = {
 	method: 'parse-to-html';
-	// accessor: UndefinedOrMethod<string>
 };
 
 export type ParseAsXmlRule = {
@@ -115,6 +120,7 @@ export type Rule =
 	| ReadFileRule
 	| WriteFileRule
 	| LogRule
+	| ResponseDecodeRule
 	| HtmlQuerySelectorRule
 	| HtmlQuerySelectorAllRule
 	| HtmlTextRule
@@ -133,14 +139,11 @@ export type Rule =
 	| SequenceRule
 	| RecordRule;
 
-// type MaybeArray<T> = T | Array<T>
 type MaybeMethod<T> = T | ((value: any, _value: any) => T);
-// type UndefinedOrMethod<T> = undefined | ((value: any) => T)
-// type UndefinedOrMethod<T> = T | ((value: any) => T)
 
 async function handleDownload(url: string) {
 	try {
-		const res = await fetch(url, {
+		return await fetch(url, {
 			redirect: 'follow',
 			headers: {
 				'User-Agent':
@@ -150,10 +153,7 @@ async function handleDownload(url: string) {
 				'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
 				'Accept-Encoding': 'gzip, deflate, br'
 			}
-			// FIXME do that in a Response rule?
-		}).then((res) => res.text());
-		// log("download", res);
-		return res;
+		});
 	} catch (e) {
 		log('download failure', e);
 	}
@@ -193,6 +193,11 @@ async function handleRecord(
 	return res;
 }
 
+export function decodeArrayBuffer(buffer: ArrayBuffer, encoding: string | undefined) {
+	const decoder = new TextDecoder(encoding ?? 'utf-8');
+	return decoder.decode(buffer);
+}
+
 async function _parse(rule: Rule, value: any, _value: any) {
 	let res: any;
 	switch (rule.method) {
@@ -210,6 +215,15 @@ async function _parse(rule: Rule, value: any, _value: any) {
 		case 'log':
 			res = value;
 			console.log({ value, rule });
+			break;
+
+		// Response rules
+		case 'response-decode':
+			res = (value as Response)
+				?.arrayBuffer()
+				.then((buffer) =>
+					decodeArrayBuffer(buffer, normalizeMaybeMethod(rule.encoding, value, _value))
+				);
 			break;
 
 		// HTML rules
@@ -289,17 +303,9 @@ export async function parse(rule: Rule, value: any = undefined) {
 	return _parse(rule, value, value);
 }
 
-// function normalizeMaybeArray<T>(value: MaybeArray<T>) {
-//     return Array.isArray(value) ? value : [value]
-// }
-
 function normalizeMaybeMethod<T>(maybeMethod: MaybeMethod<T>, value: any, _value: any) {
 	return typeof maybeMethod === 'function' ? (maybeMethod as Function)(value, _value) : maybeMethod;
 }
-
-// function normalizeUndefinedOrMethod<T>(undefinedOrMethod: UndefinedOrMethod<T>, value: any) {
-//     return typeof undefinedOrMethod === "function" ? (undefinedOrMethod as Function)(value) : value
-// }
 
 type Primitive = null | undefined | boolean | number | bigint | string | symbol;
 

@@ -9,7 +9,7 @@ export const xml = `<items>
     </item>
 </items>`;
 
-export const html = `<html>
+export const html = `<html encoding="ISO-8859-1">
     <body>
         <p>Hello world!</p>
         <ul>

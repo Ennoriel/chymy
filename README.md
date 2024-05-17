@@ -54,4 +54,9 @@
   - [ ] record > string = record > project ??
 
 - [ ] exceptions / undefined
+
   - [ ] html-query-selector + html-text plante si html-query-selector ne remonte rien
+
+- [ ] add a getter to every rule
+  - [ ] what happen with already existing ones (url, path)?
+  - [ ] value, \_value

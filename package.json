@@ -1,6 +1,6 @@
 {
 	"name": "chymy",
-	"version": "0.0.3",
+	"version": "0.1.0",
 	"description": "scraping library",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
