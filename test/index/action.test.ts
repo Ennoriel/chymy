@@ -2,11 +2,14 @@ import { readFileSync } from 'fs';
 import { Rule, parse } from '../../src';
 import { html } from './data';
 
+const mockFetch = {
+	clone: () => mockFetch,
+	arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
+}
+
 /* @ts-ignore */
 global.fetch = jest.fn(() =>
-	Promise.resolve({
-		arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
-	})
+	Promise.resolve(mockFetch)
 );
 
 jest.mock('node:fs', () => ({
@@ -15,7 +18,7 @@ jest.mock('node:fs', () => ({
 }));
 
 class TextDecoder {
-	constructor() {}
+	constructor() { }
 
 	decode = () => html;
 }
