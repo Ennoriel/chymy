@@ -1,9 +1,11 @@
 - [x] meta rules
+
   - [x] IterateRule
   - [x] SequenceRule
   - [x] RecordRule
 
 - [x] action rules
+
   - [x] RuleDownload
   - [x] RuleReadFromFile
   - [x] RuleWriteToFile
@@ -11,11 +13,13 @@
   - [x] RuleLog
 
 - [x] HTML
+
   - [x] RuleQuerySelector
   - [x] RuleText
   - [x] RuleAttributes
 
 - [x] String
+
   - [x] RuleRegExp
   - [x] RuleParseInt
   - [x] RuleDate
@@ -24,23 +28,28 @@
   - [x] RuleParseAsJson
 
 - [x] Object
+
   - [x] IdentityRule
   - [x] DefaultRule
   - [x] ProjectRule
 
 - [ ] array
+
   - [ ] sort
   - [ ] dedupe
   - [ ] flat
 
 - [ ] accessors
+
   - [ ] RuleWriteToFile
 
 - [ ] response ??
+
   - [ ] text()
   - [ ] json()
 
 - [ ] combos
+
   - [ ] html-query-selector + html-text
   - [ ] record > string = record > project ??
 
