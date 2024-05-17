@@ -219,9 +219,10 @@ async function _parse(rule: Rule, value: any, _value: any) {
 
 		// Response rules
 		case 'response-decode':
-			res = (value as Response)
+			res = await (value as Response)
+				?.clone()
 				?.arrayBuffer()
-				.then((buffer) =>
+				?.then((buffer) =>
 					decodeArrayBuffer(buffer, normalizeMaybeMethod(rule.encoding, value, _value))
 				);
 			break;

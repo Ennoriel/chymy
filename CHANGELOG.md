@@ -1,5 +1,11 @@
 # chymy
 
+## 0.1.1
+
+### Patch Changes
+
+- fix response undefined second time arrayBuffer is called
+
 ## 0.1.0
 
 ### Minor Changes
