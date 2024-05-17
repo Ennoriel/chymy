@@ -27,6 +27,7 @@ export type LogRule = {
 // Response rules
 export type ResponseDecodeRule = {
 	method: 'response-decode';
+	get?: UndefinedOrMethod<Response>
 	encoding?: MaybeMethod<string | undefined>;
 };
 
@@ -139,6 +140,7 @@ export type Rule =
 	| SequenceRule
 	| RecordRule;
 
+type UndefinedOrMethod<T> = undefined | ((value: any, _value: any) => T);
 type MaybeMethod<T> = T | ((value: any, _value: any) => T);
 
 async function handleDownload(url: string) {
@@ -219,8 +221,8 @@ async function _parse(rule: Rule, value: any, _value: any) {
 
 		// Response rules
 		case 'response-decode':
-			res = await (value as Response)
-				?.clone()
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			res = await v?.clone()
 				?.arrayBuffer()
 				?.then((buffer) =>
 					decodeArrayBuffer(buffer, normalizeMaybeMethod(rule.encoding, value, _value))
@@ -306,6 +308,10 @@ export async function parse(rule: Rule, value: any = undefined) {
 
 function normalizeMaybeMethod<T>(maybeMethod: MaybeMethod<T>, value: any, _value: any) {
 	return typeof maybeMethod === 'function' ? (maybeMethod as Function)(value, _value) : maybeMethod;
+}
+
+function normalizeUndefinedOrMethod<T>(undefinedOrMethod: UndefinedOrMethod<T>, value: any, _value: any): T {
+	return undefinedOrMethod ? undefinedOrMethod(value, _value) : value;
 }
 
 type Primitive = null | undefined | boolean | number | bigint | string | symbol;

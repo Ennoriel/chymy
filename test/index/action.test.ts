@@ -83,11 +83,7 @@ describe('action', () => {
 					method: 'record',
 					record: {
 						content: {
-							method: 'sequence',
-							sequence: [
-								{ method: 'project', project: (value) => value.response },
-								{ method: 'response-decode', encoding: (v) => v.encoding }
-							]
+							method: 'response-decode', get: v => v.response, encoding: (v) => v.encoding
 						}
 					}
 				}

@@ -1,5 +1,11 @@
 # chymy
 
+## 0.1.2
+
+### Patch Changes
+
+- implement a getter attribute for the response-decode method
+
 ## 0.1.1
 
 ### Patch Changes
