@@ -34,11 +34,13 @@ export type ResponseDecodeRule = {
 // HTML rules
 export type HtmlQuerySelectorRule = {
 	method: 'html-query-selector';
+	get?: UndefinedOrMethod<HTMLElement>
 	selector: MaybeMethod<string>;
 };
 
 export type HtmlQuerySelectorAllRule = {
 	method: 'html-query-selector-all';
+	get?: UndefinedOrMethod<HTMLElement>
 	selector: MaybeMethod<string>;
 };
 
@@ -230,16 +232,22 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			break;
 
 		// HTML rules
-		case 'html-query-selector':
-			res = (value as HTMLElement)?.querySelector(
+		case 'html-query-selector': {
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+
+			res = v?.querySelector(
 				normalizeMaybeMethod(rule.selector, value, _value)
 			);
 			break;
-		case 'html-query-selector-all':
-			res = (value as HTMLElement)?.querySelectorAll(
+		}
+		case 'html-query-selector-all': {
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+
+			res = v?.querySelectorAll(
 				normalizeMaybeMethod(rule.selector, value, _value)
 			);
 			break;
+		}
 		case 'html-text':
 			res = (value as HTMLElement)?.text?.trim();
 			break;
