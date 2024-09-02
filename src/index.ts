@@ -67,6 +67,10 @@ export type DateRule = {
 	method: 'date';
 };
 
+export type CleanRule = {
+	method: 'clean';
+};
+
 export type ParseToHtmlRule = {
 	method: 'parse-to-html';
 };
@@ -131,6 +135,7 @@ export type Rule =
 	| RegExpRule
 	| ParseIntRule
 	| DateRule
+	| CleanRule
 	| ParseToHtmlRule
 	| ParseAsXmlRule
 	| ParseAsJsonRule
@@ -144,6 +149,15 @@ export type Rule =
 
 type UndefinedOrMethod<T> = undefined | ((value: any, _value: any) => T);
 type MaybeMethod<T> = T | ((value: any, _value: any) => T);
+
+// taken from green-news without htmlDecode method
+function cleanString(str: string | undefined) {
+	return str
+		?.replace(/&#8239;/g, ' ')
+		.replace(/\n/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+}
 
 async function handleDownload(url: string) {
 	try {
@@ -222,7 +236,7 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			break;
 
 		// Response rules
-		case 'response-decode':
+		case 'response-decode': {
 			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
 			res = await v?.clone()
 				?.arrayBuffer()
@@ -230,7 +244,7 @@ async function _parse(rule: Rule, value: any, _value: any) {
 					decodeArrayBuffer(buffer, normalizeMaybeMethod(rule.encoding, value, _value))
 				);
 			break;
-
+		}
 		// HTML rules
 		case 'html-query-selector': {
 			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
@@ -266,6 +280,9 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			break;
 		case 'date':
 			res = new Date(value);
+			break;
+		case 'clean':
+			res = cleanString(value)
 			break;
 		case 'parse-to-html':
 			res = htmlParse(value);
