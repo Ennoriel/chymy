@@ -1,10 +1,10 @@
 export const xml = `<items>
     <item>
-        <name> Couteau </name>
+        <name attr="cautious"> <![CDATA[Couteau]]> </name>
         <size> 12 </size>
     </item>
     <item>
-        <name> Fourchette </name>
+        <name> <![CDATA[Fourchette]]> </name>
         <size> 14 </size>
     </item>
 </items>`;

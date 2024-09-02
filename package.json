@@ -27,8 +27,8 @@
 	"homepage": "https://github.com/Ennoriel/chymy",
 	"dependencies": {
 		"chyme": "^2.0.3",
-		"fast-xml-parser": "^4.3.6",
-		"node-html-parser": "^6.1.13"
+		"node-html-parser": "^6.1.13",
+		"xml-js": "^1.6.11"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.1",

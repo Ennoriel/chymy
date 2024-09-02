@@ -53,8 +53,25 @@ describe('string', () => {
 		const result = {
 			items: {
 				item: [
-					{ name: 'Couteau', size: 12 },
-					{ name: 'Fourchette', size: 14 }
+					{
+						"name": {
+							"_attributes": {
+								"attr": "cautious",
+							},
+							"_cdata": "Couteau",
+						},
+						"size": {
+							"_text": " 12 ",
+						},
+					},
+					{
+						"name": {
+							"_cdata": "Fourchette",
+						},
+						"size": {
+							"_text": " 14 ",
+						},
+					}
 				]
 			}
 		};

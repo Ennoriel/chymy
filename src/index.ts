@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { HTMLElement, parse as htmlParse } from 'node-html-parser';
-import { XMLParser } from 'fast-xml-parser';
+import { xml2js, type ElementCompact as _ElementCompact } from 'xml-js';
 
-const xmlParser = new XMLParser();
+export type ElementCompact = _ElementCompact;
 
 // action rules
 export type ReadDownload = {
@@ -192,7 +192,7 @@ async function handleSequence(
 	keepInitialValue?: boolean
 ) {
 	let res: any = value;
-	for (let rule of rules) {
+	for (const rule of rules) {
 		res = await _parse(rule, res, _value);
 	}
 	log('sequence', res);
@@ -312,7 +312,7 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			res = htmlParse(value);
 			break;
 		case 'parse-as-xml':
-			res = xmlParser.parse(value);
+			res = xml2js(value, { compact: true });
 			break;
 		case 'parse-as-json':
 			res = JSON.parse(value);
