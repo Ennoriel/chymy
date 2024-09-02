@@ -122,6 +122,11 @@ export type RecordRule = {
 	discardPreviousSteps?: boolean;
 };
 
+export type FirstNonNullRule = {
+	method: 'first-non-null';
+	rules: Array<Rule>;
+};
+
 export type Rule =
 	| ReadDownload
 	| ReadFileRule
@@ -145,7 +150,8 @@ export type Rule =
 	| DeletePropertyRule
 	| IterateRule
 	| SequenceRule
-	| RecordRule;
+	| RecordRule
+	| FirstNonNullRule;
 
 type UndefinedOrMethod<T> = undefined | ((value: any, _value: any) => T);
 type MaybeMethod<T> = T | ((value: any, _value: any) => T);
@@ -209,6 +215,24 @@ async function handleRecord(
 	};
 	log('record', res);
 	return res;
+}
+
+
+async function handleFirstNonNull(
+	value: any,
+	rules: Array<Rule>,
+	_value: any
+) {
+	let index = 0;
+	let res = undefined;
+
+	do {
+		if (!rules[index]) break;
+		res = await _parse(rules[index]!, value, _value)
+		index++
+	} while (!res)
+
+	return res
 }
 
 export function decodeArrayBuffer(buffer: ArrayBuffer, encoding: string | undefined) {
@@ -322,6 +346,9 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			break;
 		case 'record':
 			res = await handleRecord(value, rule.record, _value, rule.discardPreviousSteps);
+			break;
+		case 'first-non-null':
+			res = await handleFirstNonNull(value, rule.rules, _value);
 			break;
 	}
 	return res;
