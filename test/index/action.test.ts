@@ -7,7 +7,7 @@ const mockFetch = {
 	arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
 }
 
-/* @ts-ignore */
+/* @ts-expect-error mock fetch */
 global.fetch = jest.fn(() =>
 	Promise.resolve(mockFetch)
 );
@@ -23,7 +23,7 @@ class TextDecoder {
 	decode = () => html;
 }
 
-/* @ts-ignore */
+/* @ts-expect-error mock TextDecoder */
 global.TextDecoder = TextDecoder;
 
 describe('action', () => {
