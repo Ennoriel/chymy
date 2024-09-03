@@ -1,5 +1,11 @@
 # chymy
 
+## 0.2.1
+
+### Patch Changes
+
+- f0c0ec3: bump dependencies (all minor, except @rollup/plugin-commonjs major)
+
 ## 0.2.0
 
 ### Minor Changes
