@@ -129,4 +129,42 @@ describe('meta', () => {
 		const result = { name: 'John', age: 42, one: 84, two: 'Hello John' };
 		expect(await parse(config, value)).toStrictEqual(result);
 	});
+
+	it('first-non-null first element non null', async () => {
+		const config = {
+			method: 'first-non-null',
+			rules: [
+				{ method: 'project', project: (v) => v.name },
+			]
+		} satisfies Rule;
+		const value = { name: 'John', age: 42 };
+		const result = 'John';
+		expect(await parse(config, value)).toStrictEqual(result);
+	})
+
+	it('first-non-null last element non null', async () => {
+		const config = {
+			method: 'first-non-null',
+			rules: [
+				{ method: 'project', project: (v) => v.notDefined },
+				{ method: 'project', project: (v) => v.name },
+			]
+		} satisfies Rule;
+		const value = { name: 'John', age: 42 };
+		const result = 'John';
+		expect(await parse(config, value)).toStrictEqual(result);
+	})
+
+	it('first-non-null no element defined', async () => {
+		const config = {
+			method: 'first-non-null',
+			rules: [
+				{ method: 'project', project: (v) => v.notDefined },
+				{ method: 'project', project: (v) => v.notDefinedEither },
+			]
+		} satisfies Rule;
+		const value = { name: 'John', age: 42 };
+		const result = undefined;
+		expect(await parse(config, value)).toStrictEqual(result);
+	})
 });

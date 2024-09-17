@@ -22,6 +22,7 @@ export type WriteFileRule = {
 
 export type LogRule = {
 	method: 'log';
+	get?: UndefinedOrMethod<any>
 };
 
 // Response rules
@@ -73,14 +74,17 @@ export type CleanRule = {
 
 export type ParseToHtmlRule = {
 	method: 'parse-to-html';
+	get?: UndefinedOrMethod<string>
 };
 
 export type ParseAsXmlRule = {
 	method: 'parse-as-xml';
+	get?: UndefinedOrMethod<string>
 };
 
 export type ParseAsJsonRule = {
 	method: 'parse-as-json';
+	get?: UndefinedOrMethod<string>
 };
 
 // object rules
@@ -254,10 +258,12 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			writeFileSync(normalizeMaybeMethod(rule.path, value, _value), value);
 			res = value;
 			break;
-		case 'log':
+		case 'log': {
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
 			res = value;
-			console.log({ value, rule });
+			console.log({ value: v, rule });
 			break;
+		}
 
 		// Response rules
 		case 'response-decode': {
@@ -308,15 +314,21 @@ async function _parse(rule: Rule, value: any, _value: any) {
 		case 'clean':
 			res = cleanString(value)
 			break;
-		case 'parse-to-html':
-			res = htmlParse(value);
+		case 'parse-to-html': {
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			res = htmlParse(v);
 			break;
-		case 'parse-as-xml':
-			res = xml2js(value, { compact: true });
+		}
+		case 'parse-as-xml': {
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			res = xml2js(v, { compact: true });
 			break;
-		case 'parse-as-json':
-			res = JSON.parse(value);
+		}
+		case 'parse-as-json': {
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			res = JSON.parse(v);
 			break;
+		}
 
 		// object rules
 		case 'identity':

@@ -1,5 +1,5 @@
 import { Rule, parse } from '../../src';
-import { xml } from './data';
+import { parsedXml, xml } from './data';
 
 describe('string', () => {
 	it('regexp - defined', async () => {
@@ -37,6 +37,13 @@ describe('string', () => {
 		expect(await parse(config, value)).toStrictEqual(result);
 	});
 
+	it('clean', async () => {
+		const config = { method: 'clean' } satisfies Rule;
+		const value = 'Hello les    &#8239;haricots&#8239;   ';
+		const result = 'Hello les haricots';
+		expect(await parse(config, value)).toStrictEqual(result);
+	});
+
 	it('parse-to-html', async () => {
 		const config = {
 			method: 'sequence',
@@ -50,31 +57,14 @@ describe('string', () => {
 	it('parse-as-xml', async () => {
 		const config = { method: 'parse-as-xml' } satisfies Rule;
 		const value = xml;
-		const result = {
-			items: {
-				item: [
-					{
-						"name": {
-							"_attributes": {
-								"attr": "cautious",
-							},
-							"_cdata": "Couteau",
-						},
-						"size": {
-							"_text": " 12 ",
-						},
-					},
-					{
-						"name": {
-							"_cdata": "Fourchette",
-						},
-						"size": {
-							"_text": " 14 ",
-						},
-					}
-				]
-			}
-		};
+		const result = parsedXml;
+		expect(await parse(config, value)).toStrictEqual(result);
+	});
+
+	it('parse-as-xml with get method', async () => {
+		const config = { method: 'parse-as-xml', get: v => v.xml } satisfies Rule;
+		const value = { xml };
+		const result = parsedXml;
 		expect(await parse(config, value)).toStrictEqual(result);
 	});
 

@@ -9,6 +9,21 @@ export const xml = `<items>
     </item>
 </items>`;
 
+export const parsedXml = {
+    items: {
+        item: [
+            {
+                "name": { "_attributes": { "attr": "cautious", }, "_cdata": "Couteau", },
+                "size": { "_text": " 12 ", },
+            },
+            {
+                "name": { "_cdata": "Fourchette", },
+                "size": { "_text": " 14 ", },
+            }
+        ]
+    }
+}
+
 export const html = `<html encoding="ISO-8859-1">
     <body>
         <p>Hello world!</p>
