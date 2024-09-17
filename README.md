@@ -1,52 +1,18 @@
-- [x] meta rules
+# chymy
 
-  - [x] IterateRule
-  - [x] SequenceRule
-  - [x] RecordRule
+## introduction
 
-- [x] action rules
+This library is a scrapping library based on a single method and a declarative config object
 
-  - [x] RuleDownload
-  - [x] RuleReadFromFile
-  - [x] RuleWriteToFile
-    - [ ] create folder if does not exist
-  - [x] RuleLog
+## TODO
 
-- [x] HTML
-
-  - [x] RuleQuerySelector
-  - [x] RuleText
-  - [x] RuleAttributes
-
-- [x] String
-
-  - [x] RuleRegExp
-  - [x] RuleParseInt
-  - [x] RuleDate
-  - [x] RuleParseToHtml
-  - [x] RuleParseAsXml
-  - [x] RuleParseAsJson
-
-- [x] Object
-
-  - [x] IdentityRule
-  - [x] DefaultRule
-  - [x] ProjectRule
+- [ ] create folder if does not exist
 
 - [ ] array
 
   - [ ] sort
   - [ ] dedupe
   - [ ] flat
-
-- [ ] accessors
-
-  - [ ] RuleWriteToFile
-
-- [ ] response ??
-
-  - [ ] text()
-  - [ ] json()
 
 - [ ] combos
 
@@ -60,3 +26,5 @@
 - [ ] add a getter to every rule
   - [ ] what happen with already existing ones (url, path)?
   - [ ] value, \_value
+
+https://effect.website/

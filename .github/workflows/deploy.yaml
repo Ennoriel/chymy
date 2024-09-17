@@ -41,7 +41,7 @@ jobs:
       - name: 🔨 Install dependencies
         run: pnpm install
 
-      - name: 🔨 Rest project
+      - name: 🔨 Test project
         run: pnpm test
 
       - name: 🔨 Build project

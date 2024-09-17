@@ -5,12 +5,10 @@ import { html } from './data';
 const mockFetch = {
 	clone: () => mockFetch,
 	arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
-}
+};
 
 /* @ts-expect-error mock fetch */
-global.fetch = jest.fn(() =>
-	Promise.resolve(mockFetch)
-);
+global.fetch = jest.fn(() => Promise.resolve(mockFetch));
 
 jest.mock('node:fs', () => ({
 	readFileSync,
@@ -18,7 +16,7 @@ jest.mock('node:fs', () => ({
 }));
 
 class TextDecoder {
-	constructor() { }
+	constructor() {}
 
 	decode = () => html;
 }
@@ -83,7 +81,9 @@ describe('action', () => {
 					method: 'record',
 					record: {
 						content: {
-							method: 'response-decode', get: v => v.response, encoding: (v) => v.encoding
+							method: 'response-decode',
+							get: (v) => v.response,
+							encoding: (v) => v.encoding
 						}
 					}
 				}

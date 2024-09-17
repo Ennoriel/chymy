@@ -2,6 +2,7 @@
 /.github
 /coverage
 /src
+/test
 .eslintignore
 .eslintrc.js
 .gitignore

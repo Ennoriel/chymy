@@ -22,26 +22,26 @@ export type WriteFileRule = {
 
 export type LogRule = {
 	method: 'log';
-	get?: UndefinedOrMethod<any>
+	get?: UndefinedOrMethod<any>;
 };
 
 // Response rules
 export type ResponseDecodeRule = {
 	method: 'response-decode';
-	get?: UndefinedOrMethod<Response>
+	get?: UndefinedOrMethod<Response>;
 	encoding?: MaybeMethod<string | undefined>;
 };
 
 // HTML rules
 export type HtmlQuerySelectorRule = {
 	method: 'html-query-selector';
-	get?: UndefinedOrMethod<HTMLElement>
+	get?: UndefinedOrMethod<HTMLElement>;
 	selector: MaybeMethod<string>;
 };
 
 export type HtmlQuerySelectorAllRule = {
 	method: 'html-query-selector-all';
-	get?: UndefinedOrMethod<HTMLElement>
+	get?: UndefinedOrMethod<HTMLElement>;
 	selector: MaybeMethod<string>;
 };
 
@@ -74,17 +74,17 @@ export type CleanRule = {
 
 export type ParseToHtmlRule = {
 	method: 'parse-to-html';
-	get?: UndefinedOrMethod<string>
+	get?: UndefinedOrMethod<string>;
 };
 
 export type ParseAsXmlRule = {
 	method: 'parse-as-xml';
-	get?: UndefinedOrMethod<string>
+	get?: UndefinedOrMethod<string>;
 };
 
 export type ParseAsJsonRule = {
 	method: 'parse-as-json';
-	get?: UndefinedOrMethod<string>
+	get?: UndefinedOrMethod<string>;
 };
 
 // object rules
@@ -160,13 +160,22 @@ export type Rule =
 type UndefinedOrMethod<T> = undefined | ((value: any, _value: any) => T);
 type MaybeMethod<T> = T | ((value: any, _value: any) => T);
 
-// taken from green-news without htmlDecode method
+function htmlDecode(input: string | undefined) {
+	if (!input) return undefined;
+	const iteration1 = htmlParse(input).text;
+	if (!iteration1) return undefined;
+	const iteration2 = htmlParse(iteration1).text;
+	return iteration2 ?? undefined;
+}
+
 function cleanString(str: string | undefined) {
-	return str
+	const step1 = str
 		?.replace(/&#8239;/g, ' ')
 		.replace(/\n/g, ' ')
 		.replace(/\s+/g, ' ')
 		.trim();
+
+	return htmlDecode(step1);
 }
 
 async function handleDownload(url: string) {
@@ -221,22 +230,17 @@ async function handleRecord(
 	return res;
 }
 
-
-async function handleFirstNonNull(
-	value: any,
-	rules: Array<Rule>,
-	_value: any
-) {
+async function handleFirstNonNull(value: any, rules: Array<Rule>, _value: any) {
 	let index = 0;
 	let res = undefined;
 
 	do {
 		if (!rules[index]) break;
-		res = await _parse(rules[index]!, value, _value)
-		index++
-	} while (!res)
+		res = await _parse(rules[index]!, value, _value);
+		index++;
+	} while (!res);
 
-	return res
+	return res;
 }
 
 export function decodeArrayBuffer(buffer: ArrayBuffer, encoding: string | undefined) {
@@ -259,7 +263,7 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			res = value;
 			break;
 		case 'log': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
 			res = value;
 			console.log({ value: v, rule });
 			break;
@@ -267,8 +271,9 @@ async function _parse(rule: Rule, value: any, _value: any) {
 
 		// Response rules
 		case 'response-decode': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
-			res = await v?.clone()
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
+			res = await v
+				?.clone()
 				?.arrayBuffer()
 				?.then((buffer) =>
 					decodeArrayBuffer(buffer, normalizeMaybeMethod(rule.encoding, value, _value))
@@ -277,19 +282,15 @@ async function _parse(rule: Rule, value: any, _value: any) {
 		}
 		// HTML rules
 		case 'html-query-selector': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
 
-			res = v?.querySelector(
-				normalizeMaybeMethod(rule.selector, value, _value)
-			);
+			res = v?.querySelector(normalizeMaybeMethod(rule.selector, value, _value));
 			break;
 		}
 		case 'html-query-selector-all': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
 
-			res = v?.querySelectorAll(
-				normalizeMaybeMethod(rule.selector, value, _value)
-			);
+			res = v?.querySelectorAll(normalizeMaybeMethod(rule.selector, value, _value));
 			break;
 		}
 		case 'html-text':
@@ -312,20 +313,20 @@ async function _parse(rule: Rule, value: any, _value: any) {
 			res = new Date(value);
 			break;
 		case 'clean':
-			res = cleanString(value)
+			res = cleanString(value);
 			break;
 		case 'parse-to-html': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
 			res = htmlParse(v);
 			break;
 		}
 		case 'parse-as-xml': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
 			res = xml2js(v, { compact: true });
 			break;
 		}
 		case 'parse-as-json': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value)
+			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
 			res = JSON.parse(v);
 			break;
 		}
@@ -374,7 +375,11 @@ function normalizeMaybeMethod<T>(maybeMethod: MaybeMethod<T>, value: any, _value
 	return typeof maybeMethod === 'function' ? (maybeMethod as Function)(value, _value) : maybeMethod;
 }
 
-function normalizeUndefinedOrMethod<T>(undefinedOrMethod: UndefinedOrMethod<T>, value: any, _value: any): T {
+function normalizeUndefinedOrMethod<T>(
+	undefinedOrMethod: UndefinedOrMethod<T>,
+	value: any,
+	_value: any
+): T {
 	return undefinedOrMethod ? undefinedOrMethod(value, _value) : value;
 }
 

@@ -39,8 +39,8 @@ describe('string', () => {
 
 	it('clean', async () => {
 		const config = { method: 'clean' } satisfies Rule;
-		const value = 'Hello les    &#8239;haricots&#8239;   ';
-		const result = 'Hello les haricots';
+		const value = 'Hello les    &#8239;haricots&#8239;   , qu&rsquo;ils sont &ldquo;beaux&rdquo;';
+		const result = 'Hello les haricots , qu’ils sont “beaux”';
 		expect(await parse(config, value)).toStrictEqual(result);
 	});
 
@@ -62,7 +62,7 @@ describe('string', () => {
 	});
 
 	it('parse-as-xml with get method', async () => {
-		const config = { method: 'parse-as-xml', get: v => v.xml } satisfies Rule;
+		const config = { method: 'parse-as-xml', get: (v) => v.xml } satisfies Rule;
 		const value = { xml };
 		const result = parsedXml;
 		expect(await parse(config, value)).toStrictEqual(result);
