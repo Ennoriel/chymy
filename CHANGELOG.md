@@ -1,5 +1,12 @@
 # chymy
 
+## 0.2.3
+
+### Patch Changes
+
+- eb64ae2: improve cleanString method (add second step to decode html entities)
+- fd9fbc7: add get method to rules: log, parse-to-html, parse-as-xml and parse-as-json
+
 ## 0.2.1
 
 ### Patch Changes
