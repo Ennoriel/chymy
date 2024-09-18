@@ -1,4 +1,4 @@
-// import { writeFileSync } from "fs"
+import { describe, expect, it } from 'vitest';
 import { Rule, parse } from '../../src';
 
 const config: Rule = {

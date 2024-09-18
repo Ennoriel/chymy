@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { describe, expect, it, vi } from 'vitest';
 import { Rule, parse } from '../../src';
 import { html } from './data';
 
@@ -7,12 +7,9 @@ const mockFetch = {
 	arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
 };
 
-/* @ts-expect-error mock fetch */
-global.fetch = jest.fn(() => Promise.resolve(mockFetch));
-
-jest.mock('node:fs', () => ({
-	readFileSync,
-	writeFileSync: jest.fn()
+vi.mock('node:fs', async (importOriginal) => ({
+	...(await importOriginal<typeof import('node:fs')>()),
+	writeFileSync: vi.fn().mockImplementation(() => '')
 }));
 
 class TextDecoder {
@@ -105,7 +102,7 @@ describe('action', () => {
 	});
 
 	it('write-file', async () => {
-		const config = { method: 'write-file', path: './src/do_not_commit.txt' } satisfies Rule;
+		const config = { method: 'write-file', path: './test/index/action.txt' } satisfies Rule;
 		const value = '12azert34';
 		const expected = value;
 		expect(await parse(config, value)).toStrictEqual(expected);

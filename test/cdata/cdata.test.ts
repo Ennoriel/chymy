@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { parse, type Rule } from '../../src';
 
 const config = {
@@ -44,9 +45,9 @@ describe('cdata', () => {
 		},
 		{
 			media: 'La Croix',
-			cdata: `<p>Le premier parc éolien flottant, qui sera installé au large du Morbihan, a été attribué à un consortium composé de l’allemand BayWa r.e et du belge Elicio. Mais le prix proposé est ultra-compétitif, à 86,45 €/MWh. Intenable, affirment les concurrents, qui s’inquiètent de la guerre des prix en train de s’amorcer.</p>`,
+			cdata: `<p>Le premier parc éolien flottant, qui sera installé au large du Morbihan, a été attribué à un consortium composé de l’allemand BayWa r.e et du belge Elicio. Mais le prix proposé est ultra-compétitif, à 86,45 €/MWh. Intenable, affirment les concurrents, qui s’inquiètent de la guerre des prix en train de s’amorcer.</p>`,
 			description:
-				'Le premier parc éolien flottant, qui sera installé au large du Morbihan, a été attribué à un consortium composé de l’allemand BayWa r.e et du belge Elicio. Mais le prix proposé est ultra-compétitif, à 86,45 €/MWh. Intenable, affirment les concurrents, qui s’inquiètent de la guerre des prix en train de s’amorcer.'
+				'Le premier parc éolien flottant, qui sera installé au large du Morbihan, a été attribué à un consortium composé de l’allemand BayWa r.e et du belge Elicio. Mais le prix proposé est ultra-compétitif, à 86,45 €/MWh. Intenable, affirment les concurrents, qui s’inquiètent de la guerre des prix en train de s’amorcer.'
 		}
 	];
 
