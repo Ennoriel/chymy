@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { HTMLElement, parse as htmlParse } from 'node-html-parser';
 import { xml2js, type ElementCompact as _ElementCompact } from 'xml-js';
+import { sleep } from 'chyme';
 
 export type ElementCompact = _ElementCompact;
 
@@ -111,6 +112,8 @@ export type DeletePropertyRule = {
 export type IterateRule = {
 	method: 'iterate';
 	iterate: Rule;
+	strategy?: 'parallel' | 'sequence';
+	waitMs?: number;
 	setCurrentItemAsInitialValue?: boolean;
 };
 
@@ -196,6 +199,21 @@ async function handleDownload(url: string) {
 	}
 
 	return undefined;
+}
+
+async function handleIterate(value: any, rule: IterateRule, _value: any) {
+	const parseItem = (v: any) =>
+		_parse(rule.iterate, v, rule.setCurrentItemAsInitialValue ? v : _value);
+	if (rule.strategy === 'sequence') {
+		const res = [];
+		for (const item of value) {
+			res.push(await parseItem(item));
+			if (rule.waitMs) await sleep(rule.waitMs);
+		}
+		return res;
+	} else {
+		return await Promise.all(value.map(parseItem));
+	}
 }
 
 async function handleSequence(
@@ -348,11 +366,7 @@ async function _parse(rule: Rule, value: any, _value: any) {
 
 		// meta rules
 		case 'iterate':
-			res = await Promise.all(
-				value.map((v: any) =>
-					_parse(rule.iterate, v, rule.setCurrentItemAsInitialValue ? v : _value)
-				)
-			);
+			res = handleIterate(value, rule, _value);
 			break;
 		case 'sequence':
 			res = await handleSequence(value, rule.sequence, _value, rule.keepInitialValue);
