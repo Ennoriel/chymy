@@ -12,17 +12,10 @@ vi.mock('node:fs', async (importOriginal) => ({
 	writeFileSync: vi.fn().mockImplementation(() => '')
 }));
 
-class TextDecoder {
-	constructor() {}
-
-	decode = () => html;
-}
-
-/* @ts-expect-error mock TextDecoder */
-global.TextDecoder = TextDecoder;
+global.fetch = vi.fn(() => Promise.resolve(new Response(html)));
 
 describe('action', () => {
-	it('download', async () => {
+	it('download - with encoding', async () => {
 		const config = {
 			method: 'sequence',
 			sequence: [
@@ -30,7 +23,7 @@ describe('action', () => {
 				{ method: 'response-decode', encoding: 'utf-8' }
 			]
 		} satisfies Rule;
-		const value = 'http://localhost:5173';
+		const value = 'https://maximedupont.fr';
 		const expected = html;
 		expect(await parse(config, value)).toStrictEqual(expected);
 	});
