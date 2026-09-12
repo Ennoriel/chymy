@@ -1,26 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parse, type Rule } from '../../src';
-
-const config = {
-	method: 'sequence',
-	sequence: [
-		{ method: 'parse-to-html' },
-		{
-			method: 'record',
-			discardPreviousSteps: true,
-			record: {
-				description: { method: 'html-text' },
-				image: {
-					method: 'sequence',
-					sequence: [
-						{ method: 'html-query-selector', selector: 'img' },
-						{ method: 'html-attribute', attribute: 'src' }
-					]
-				}
-			}
-		}
-	]
-} satisfies Rule;
+import { parse } from '../../src';
 
 describe('cdata', () => {
 	const cases = [
@@ -53,7 +32,16 @@ describe('cdata', () => {
 
 	cases.forEach(({ media, cdata, description, image }) => {
 		it(`${media} CDATA should be decoded`, async () => {
-			expect(await parse(config, cdata)).toStrictEqual({ description, image });
+			const result = await parse(cdata)
+				.parseToHtml()
+				.record(
+					{
+						description: (v) => v.htmlText(),
+						image: (v) => v.htmlQuerySelector('img').htmlAttribute('src')
+					},
+					{ discardPreviousSteps: true }
+				);
+			expect(result).toStrictEqual({ description, image });
 		});
 	});
 });

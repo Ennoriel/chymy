@@ -5,163 +5,51 @@ import { sleep } from 'chyme';
 
 export type ElementCompact = _ElementCompact;
 
-// action rules
-export type ReadDownload = {
-	method: 'download';
-	url: MaybeMethod<string>;
-};
+type Accessor<T, Out> = (value: T, rootValue: any) => Out;
+type MaybeAccessor<T, Out> = Out | Accessor<T, Out>;
 
-export type ReadFileRule = {
-	method: 'read-file';
-	path: MaybeMethod<string>;
-};
+type StepFn = (value: any, rootValue: any) => any;
 
-export type WriteFileRule = {
-	method: 'write-file';
-	path: MaybeMethod<string>;
-};
-
-export type LogRule = {
-	method: 'log';
-	get?: UndefinedOrMethod<any>;
-};
-
-// Response rules
-export type ResponseDecodeRule = {
-	method: 'response-decode';
-	get?: UndefinedOrMethod<Response>;
-	encoding?: MaybeMethod<string | undefined>;
-};
-
-// HTML rules
-export type HtmlQuerySelectorRule = {
-	method: 'html-query-selector';
-	get?: UndefinedOrMethod<HTMLElement>;
-	selector: MaybeMethod<string>;
-};
-
-export type HtmlQuerySelectorAllRule = {
-	method: 'html-query-selector-all';
-	get?: UndefinedOrMethod<HTMLElement>;
-	selector: MaybeMethod<string>;
-};
-
-export type HtmlTextRule = {
-	method: 'html-text';
-};
-
-export type HtmlAttributesRule = {
-	method: 'html-attribute';
-	attribute: MaybeMethod<string>;
-};
-
-// string rules
-export type RegExpRule = {
-	method: 'regexp';
-	regexp: RegExp;
-};
-
-export type ParseIntRule = {
-	method: 'parseInt';
-};
-
-export type DateRule = {
-	method: 'date';
-};
-
-export type CleanRule = {
-	method: 'clean';
-};
-
-export type ParseToHtmlRule = {
-	method: 'parse-to-html';
-	get?: UndefinedOrMethod<string>;
-};
-
-export type ParseAsXmlRule = {
-	method: 'parse-as-xml';
-	get?: UndefinedOrMethod<string>;
-};
-
-export type ParseAsJsonRule = {
-	method: 'parse-as-json';
-	get?: UndefinedOrMethod<string>;
-};
-
-// object rules
-export type IdentityRule = {
-	method: 'identity';
-};
-
-export type DefaultRule = {
-	method: 'default';
-	default: any;
-};
-
-export type ProjectRule = {
-	method: 'project';
-	project: (value: any, _value?: any) => any;
-};
-
-export type DeletePropertyRule = {
-	method: 'delete-property';
-	property: string;
-};
-
-// meta rules
-export type IterateRule = {
-	method: 'iterate';
-	iterate: Rule;
+type IterateOptions = {
 	strategy?: 'parallel' | 'sequence';
 	waitMs?: number;
-	setCurrentItemAsInitialValue?: boolean;
+	rebaseRoot?: boolean;
 };
 
-export type SequenceRule = {
-	method: 'sequence';
-	sequence: Array<Rule>;
-	keepInitialValue?: boolean; // necessary when the following step discards the current item
-};
-
-export type RecordRule = {
-	method: 'record';
-	record: Record<string, Rule>;
+type RecordOptions = {
 	discardPreviousSteps?: boolean;
 };
 
-export type FirstNonNullRule = {
-	method: 'first-non-null';
-	rules: Array<Rule>;
-};
+type Primitive = null | undefined | boolean | number | bigint | string | symbol;
 
-export type Rule =
-	| ReadDownload
-	| ReadFileRule
-	| WriteFileRule
-	| LogRule
-	| ResponseDecodeRule
-	| HtmlQuerySelectorRule
-	| HtmlQuerySelectorAllRule
-	| HtmlTextRule
-	| HtmlAttributesRule
-	| RegExpRule
-	| ParseIntRule
-	| DateRule
-	| CleanRule
-	| ParseToHtmlRule
-	| ParseAsXmlRule
-	| ParseAsJsonRule
-	| IdentityRule
-	| DefaultRule
-	| ProjectRule
-	| DeletePropertyRule
-	| IterateRule
-	| SequenceRule
-	| RecordRule
-	| FirstNonNullRule;
+// Resolves what a branch callback (a record field, or a firstNonNull entry) produces
+// once awaited: unwraps a returned Chain<O>, or awaits a plain value/Promise.
+type BranchReturn<Fn> = Fn extends (base: any, rootValue: any) => infer R
+	? R extends Chain<infer O, any>
+		? O
+		: Awaited<R>
+	: never;
 
-type UndefinedOrMethod<T> = undefined | ((value: any, _value: any) => T);
-type MaybeMethod<T> = T | ((value: any, _value: any) => T);
+type RecordFields<T> = Record<string, (base: Chain<T>, rootValue: any) => any>;
+type RecordShape<T, F extends RecordFields<T>> = { [K in keyof F]: BranchReturn<F[K]> };
+type RecordMergeBase<T> = T extends Primitive ? unknown : T;
+
+function ensureIsPrimitive(value: any): value is Primitive {
+	return (
+		value === null ||
+		['undefined', 'boolean', 'number', 'bigint', 'string', 'symbol'].includes(typeof value)
+	);
+}
+
+function resolveAccessor<T, Out>(
+	maybeAccessor: MaybeAccessor<T, Out>,
+	value: T,
+	rootValue: any
+): Out {
+	return typeof maybeAccessor === 'function'
+		? (maybeAccessor as Accessor<T, Out>)(value, rootValue)
+		: maybeAccessor;
+}
 
 function htmlDecode(input: string | undefined) {
 	if (!input) return undefined;
@@ -181,7 +69,12 @@ function cleanString(str: string | undefined) {
 	return htmlDecode(step1);
 }
 
-async function handleDownload(url: string) {
+function debugLog(text: string, value: any) {
+	// eslint-disable-next-line no-constant-condition
+	if (1 > 1) console.log(text, value);
+}
+
+async function fetchUrl(url: string) {
 	try {
 		return await fetch(url, {
 			redirect: 'follow',
@@ -195,70 +88,10 @@ async function handleDownload(url: string) {
 			}
 		});
 	} catch (e) {
-		log('download failure', e);
+		debugLog('download failure', e);
 	}
 
 	return undefined;
-}
-
-async function handleIterate(value: any, rule: IterateRule, _value: any) {
-	const parseItem = (v: any) =>
-		_parse(rule.iterate, v, rule.setCurrentItemAsInitialValue ? v : _value);
-	if (rule.strategy === 'sequence') {
-		const res = [];
-		for (const item of value) {
-			res.push(await parseItem(item));
-			if (rule.waitMs) await sleep(rule.waitMs);
-		}
-		return res;
-	} else {
-		return await Promise.all(value.map(parseItem));
-	}
-}
-
-async function handleSequence(
-	value: any,
-	rules: Array<Rule>,
-	_value: any,
-	keepInitialValue?: boolean
-) {
-	let res: any = value;
-	for (const rule of rules) {
-		res = await _parse(rule, res, _value);
-	}
-	log('sequence', res);
-	return keepInitialValue ? { ...value, ...res } : res;
-}
-
-async function handleRecord(
-	value: any,
-	rules: Record<string, Rule>,
-	_value: any,
-	discardPreviousSteps?: boolean
-) {
-	const res = {
-		...(discardPreviousSteps || ensureIsPrimitive(value) ? {} : value),
-		...Object.fromEntries(
-			await Promise.all(
-				Object.entries(rules).map(async ([key, rule]) => [key, await _parse(rule, value, _value)])
-			)
-		)
-	};
-	log('record', res);
-	return res;
-}
-
-async function handleFirstNonNull(value: any, rules: Array<Rule>, _value: any) {
-	let index = 0;
-	let res = undefined;
-
-	do {
-		if (!rules[index]) break;
-		res = await _parse(rules[index]!, value, _value);
-		index++;
-	} while (!res);
-
-	return res;
 }
 
 export function decodeArrayBuffer(buffer: ArrayBuffer, encoding: string | undefined) {
@@ -266,149 +99,221 @@ export function decodeArrayBuffer(buffer: ArrayBuffer, encoding: string | undefi
 	return decoder.decode(buffer);
 }
 
-async function _parse(rule: Rule, value: any, _value: any) {
-	let res: any;
-	switch (rule.method) {
-		// action rules
-		case 'download':
-			res = await handleDownload(normalizeMaybeMethod(rule.url, value, _value));
-			break;
-		case 'read-file':
-			res = readFileSync(normalizeMaybeMethod(rule.path, value, _value)).toString();
-			break;
-		case 'write-file':
-			writeFileSync(normalizeMaybeMethod(rule.path, value, _value), value);
-			res = value;
-			break;
-		case 'log': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-			res = value;
-			console.log({ value: v, rule });
-			break;
-		}
+// T is the value currently flowing through the chain; S is the value this chain's
+// lineage started with (fixed at the nearest `Chain.of()`), used by `mergeWithInput`.
+export class Chain<T = any, S = T> implements PromiseLike<T> {
+	private readonly seed: any;
+	private readonly rootValue: any;
+	private readonly steps: ReadonlyArray<StepFn>;
+	private runPromise?: Promise<any>;
 
-		// Response rules
-		case 'response-decode': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-			res = await v
-				?.clone()
-				?.arrayBuffer()
-				?.then((buffer) =>
-					decodeArrayBuffer(buffer, normalizeMaybeMethod(rule.encoding, value, _value))
-				);
-			break;
-		}
-		// HTML rules
-		case 'html-query-selector': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-
-			res = v?.querySelector(normalizeMaybeMethod(rule.selector, value, _value));
-			break;
-		}
-		case 'html-query-selector-all': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-
-			res = v?.querySelectorAll(normalizeMaybeMethod(rule.selector, value, _value));
-			break;
-		}
-		case 'html-text':
-			res = (value as HTMLElement)?.text?.trim();
-			break;
-		case 'html-attribute':
-			res = (value as HTMLElement)?.getAttribute(
-				normalizeMaybeMethod(rule.attribute, value, _value)
-			);
-			break;
-
-		// string rules
-		case 'regexp':
-			res = value?.match(rule.regexp)?.[0];
-			break;
-		case 'parseInt':
-			res = parseInt(value);
-			break;
-		case 'date':
-			res = new Date(value);
-			break;
-		case 'clean':
-			res = cleanString(value);
-			break;
-		case 'parse-to-html': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-			res = htmlParse(v);
-			break;
-		}
-		case 'parse-as-xml': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-			res = xml2js(v, { compact: true });
-			break;
-		}
-		case 'parse-as-json': {
-			const v = normalizeUndefinedOrMethod(rule.get, value, _value);
-			res = JSON.parse(v);
-			break;
-		}
-
-		// object rules
-		case 'identity':
-			res = value;
-			break;
-		case 'default':
-			res = value ?? rule.default;
-			break;
-		case 'project':
-			res = rule.project(value, _value);
-			break;
-		case 'delete-property':
-			delete value[rule.property];
-			res = value;
-			break;
-
-		// meta rules
-		case 'iterate':
-			res = handleIterate(value, rule, _value);
-			break;
-		case 'sequence':
-			res = await handleSequence(value, rule.sequence, _value, rule.keepInitialValue);
-			break;
-		case 'record':
-			res = await handleRecord(value, rule.record, _value, rule.discardPreviousSteps);
-			break;
-		case 'first-non-null':
-			res = await handleFirstNonNull(value, rule.rules, _value);
-			break;
+	private constructor(seed: any, rootValue: any, steps: ReadonlyArray<StepFn> = []) {
+		this.seed = seed;
+		this.rootValue = rootValue;
+		this.steps = steps;
 	}
-	return res;
+
+	static of<T = any>(seed?: T, rootValue: any = seed): Chain<T, T> {
+		return new Chain<T, T>(seed, rootValue);
+	}
+
+	private addStep<Out>(step: StepFn): Chain<Out, S> {
+		return new Chain<Out, S>(this.seed, this.rootValue, [...this.steps, step]);
+	}
+
+	private run(): Promise<T> {
+		if (!this.runPromise) {
+			this.runPromise = this.steps.reduce<Promise<any>>(
+				(p, step) => p.then((value) => step(value, this.rootValue)),
+				Promise.resolve(this.seed)
+			);
+		}
+		return this.runPromise;
+	}
+
+	private static async resolveBranch<Out>(
+		returned: Chain<Out, any> | Out | Promise<Out>
+	): Promise<Out> {
+		return returned instanceof Chain ? returned.run() : returned;
+	}
+
+	then<TResult1 = T, TResult2 = never>(
+		onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+		onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
+	): PromiseLike<TResult1 | TResult2> {
+		return this.run().then(onfulfilled, onrejected);
+	}
+
+	// action
+	download(url: MaybeAccessor<T, string>): Chain<Response | undefined, S> {
+		return this.addStep((value, rootValue) => fetchUrl(resolveAccessor(url, value, rootValue)));
+	}
+
+	readFile(path: MaybeAccessor<T, string>): Chain<string, S> {
+		return this.addStep((value, rootValue) =>
+			readFileSync(resolveAccessor(path, value, rootValue)).toString()
+		);
+	}
+
+	writeFile(path: MaybeAccessor<T, string>): Chain<T, S> {
+		return this.addStep((value, rootValue) => {
+			writeFileSync(resolveAccessor(path, value, rootValue), value);
+			return value;
+		});
+	}
+
+	log(get?: (value: T, rootValue: any) => unknown): Chain<T, S> {
+		return this.addStep((value, rootValue) => {
+			console.log({ value: get ? get(value, rootValue) : value });
+			return value;
+		});
+	}
+
+	// response
+	responseDecode(encoding?: MaybeAccessor<T, string | undefined>): Chain<string | undefined, S> {
+		return this.addStep(async (value: Response | undefined, rootValue) => {
+			const buffer = await value?.clone()?.arrayBuffer();
+			if (!buffer) return undefined;
+			return decodeArrayBuffer(buffer, resolveAccessor(encoding, value as T, rootValue));
+		});
+	}
+
+	// html
+	htmlQuerySelector(
+		selector: MaybeAccessor<T, string>
+	): Chain<HTMLElement | null | undefined, S> {
+		return this.addStep((value: HTMLElement | undefined, rootValue) =>
+			value?.querySelector(resolveAccessor(selector, value as T, rootValue))
+		);
+	}
+
+	htmlQuerySelectorAll(selector: MaybeAccessor<T, string>): Chain<HTMLElement[] | undefined, S> {
+		return this.addStep((value: HTMLElement | undefined, rootValue) =>
+			value?.querySelectorAll(resolveAccessor(selector, value as T, rootValue))
+		);
+	}
+
+	htmlText(): Chain<string | undefined, S> {
+		return this.addStep((value: HTMLElement | undefined) => value?.text?.trim());
+	}
+
+	htmlAttribute(attribute: MaybeAccessor<T, string>): Chain<string | undefined, S> {
+		return this.addStep((value: HTMLElement | undefined, rootValue) =>
+			value?.getAttribute(resolveAccessor(attribute, value as T, rootValue))
+		);
+	}
+
+	// string
+	regexp(pattern: RegExp): Chain<string | undefined, S> {
+		return this.addStep((value: string | undefined) => value?.match(pattern)?.[0]);
+	}
+
+	parseInt(): Chain<number, S> {
+		return this.addStep((value) => parseInt(value));
+	}
+
+	date(): Chain<Date, S> {
+		return this.addStep((value) => new Date(value));
+	}
+
+	clean(): Chain<string | undefined, S> {
+		return this.addStep((value: string | undefined) => cleanString(value));
+	}
+
+	parseToHtml(): Chain<HTMLElement, S> {
+		return this.addStep((value: string) => htmlParse(value));
+	}
+
+	parseAsXml(): Chain<ElementCompact, S> {
+		return this.addStep((value: string) => xml2js(value, { compact: true }));
+	}
+
+	parseAsJson(): Chain<any, S> {
+		return this.addStep((value: string) => JSON.parse(value));
+	}
+
+	// object
+	default<D>(fallback: D): Chain<Exclude<T, null | undefined> | D, S> {
+		return this.addStep((value) => value ?? fallback);
+	}
+
+	project<Out>(fn: (value: T, rootValue: any) => Out): Chain<Out, S> {
+		return this.addStep((value, rootValue) => fn(value, rootValue));
+	}
+
+	deleteProperty<K extends keyof T>(property: K): Chain<Omit<T, K>, S> {
+		return this.addStep((value) => {
+			delete value[property];
+			return value;
+		});
+	}
+
+	mergeWithInput(): Chain<S & T, S> {
+		return this.addStep((value) => ({ ...this.seed, ...value }));
+	}
+
+	// meta
+	iterate<Item, Out>(
+		this: Chain<Item[] | null | undefined, S>,
+		cb: (item: Chain<Item>, rootValue: any) => Chain<Out, any> | Out | Promise<Out>,
+		options?: IterateOptions
+	): Chain<Out[], S> {
+		return this.addStep(async (value: Item[], rootValue: any) => {
+			const runOne = async (item: Item) => {
+				const itemRoot = options?.rebaseRoot ? item : rootValue;
+				const sub = Chain.of<Item>(item, itemRoot);
+				return Chain.resolveBranch(cb(sub, itemRoot));
+			};
+
+			if (options?.strategy === 'sequence') {
+				const res: Out[] = [];
+				for (const item of value) {
+					res.push(await runOne(item));
+					if (options.waitMs) await sleep(options.waitMs);
+				}
+				return res;
+			}
+
+			return Promise.all(value.map(runOne));
+		});
+	}
+
+	record<F extends RecordFields<T>>(
+		fields: F,
+		options: RecordOptions & { discardPreviousSteps: true }
+	): Chain<RecordShape<T, F>, S>;
+	record<F extends RecordFields<T>>(
+		fields: F,
+		options?: RecordOptions & { discardPreviousSteps?: false }
+	): Chain<RecordMergeBase<T> & RecordShape<T, F>, S>;
+	record(fields: RecordFields<T>, options?: RecordOptions): Chain<any, S> {
+		return this.addStep(async (value: any, rootValue: any) => {
+			const base = options?.discardPreviousSteps || ensureIsPrimitive(value) ? {} : value;
+			const entries = await Promise.all(
+				Object.entries(fields).map(async ([key, fn]) => {
+					const sub = Chain.of(value, rootValue);
+					return [key, await Chain.resolveBranch(fn(sub, rootValue))] as const;
+				})
+			);
+			return { ...base, ...Object.fromEntries(entries) };
+		});
+	}
+
+	firstNonNull<Bs extends ReadonlyArray<(base: Chain<T>, rootValue: any) => any>>(
+		branches: Bs
+	): Chain<BranchReturn<Bs[number]> | undefined, S> {
+		return this.addStep(async (value: any, rootValue: any) => {
+			let res: any;
+			for (const branch of branches) {
+				const sub = Chain.of(value, rootValue);
+				res = await Chain.resolveBranch(branch(sub, rootValue));
+				if (res) break;
+			}
+			return res;
+		});
+	}
 }
 
-export async function parse(rule: Rule, value: any = undefined) {
-	return _parse(rule, value, value);
-}
-
-function normalizeMaybeMethod<T>(maybeMethod: MaybeMethod<T>, value: any, _value: any) {
-	return typeof maybeMethod === 'function'
-		? (maybeMethod as (value: any, _value: any) => T)(value, _value)
-		: maybeMethod;
-}
-
-function normalizeUndefinedOrMethod<T>(
-	undefinedOrMethod: UndefinedOrMethod<T>,
-	value: any,
-	_value: any
-): T {
-	return undefinedOrMethod ? undefinedOrMethod(value, _value) : value;
-}
-
-type Primitive = null | undefined | boolean | number | bigint | string | symbol;
-
-function ensureIsPrimitive(value: any): value is Primitive {
-	return (
-		value === null ||
-		['undefined', 'boolean', 'number', 'bigint', 'string', 'symbol'].includes(typeof value)
-	);
-}
-
-function log(text: string, value: any) {
-	// eslint-disable-next-line no-constant-condition
-	if (1 > 1) console.log(text, value);
+export function parse<T = undefined>(value?: T): Chain<T, T> {
+	return Chain.of(value, value);
 }

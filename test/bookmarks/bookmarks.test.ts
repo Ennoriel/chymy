@@ -1,94 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Rule, parse } from '../../src';
-
-const config: Rule = {
-	method: 'sequence',
-	sequence: [
-		{
-			method: 'record',
-			record: {
-				homepage: {
-					method: 'sequence',
-					sequence: [
-						{
-							method: 'read-file',
-							path: (value) => `./test/bookmarks/${value}`
-						},
-						{
-							method: 'parse-to-html'
-						}
-					]
-				}
-			}
-		},
-		{
-			method: 'sequence',
-			sequence: [
-				{
-					method: 'project',
-					project: (value) => value.homepage
-				},
-				{
-					method: 'record',
-					discardPreviousSteps: true,
-					record: {
-						title: {
-							method: 'sequence',
-							sequence: [
-								{
-									method: 'html-query-selector',
-									selector: 'head > title'
-								},
-								{
-									method: 'html-text'
-								}
-							]
-						},
-						description: {
-							method: 'sequence',
-							sequence: [
-								{
-									method: 'html-query-selector',
-									selector: `head > meta[name="description"]`
-								},
-								{
-									method: 'html-attribute',
-									attribute: 'content'
-								}
-							]
-						},
-						image: {
-							method: 'sequence',
-							sequence: [
-								{
-									method: 'html-query-selector',
-									selector: `head > meta[property="og:image"]`
-								},
-								{
-									method: 'html-attribute',
-									attribute: 'content'
-								}
-							]
-						},
-						language: {
-							method: 'sequence',
-							sequence: [
-								{
-									method: 'html-query-selector',
-									selector: `html`
-								},
-								{
-									method: 'html-attribute',
-									attribute: 'lang'
-								}
-							]
-						}
-					}
-				}
-			]
-		}
-	]
-};
+import { parse } from '../../src';
 
 describe('bookmarks', () => {
 	it('retrieve SEO data with https://a.singlediv.com/', async () => {
@@ -99,6 +10,24 @@ describe('bookmarks', () => {
 			image: undefined,
 			language: 'en'
 		};
-		expect(await parse(config, value)).toStrictEqual(result);
+
+		const parsed = await parse(value)
+			.record({
+				homepage: (v) => v.readFile((x) => `./test/bookmarks/${x}`).parseToHtml()
+			})
+			.project((v) => v.homepage)
+			.record(
+				{
+					title: (v) => v.htmlQuerySelector('head > title').htmlText(),
+					description: (v) =>
+						v.htmlQuerySelector('head > meta[name="description"]').htmlAttribute('content'),
+					image: (v) =>
+						v.htmlQuerySelector('head > meta[property="og:image"]').htmlAttribute('content'),
+					language: (v) => v.htmlQuerySelector('html').htmlAttribute('lang')
+				},
+				{ discardPreviousSteps: true }
+			);
+
+		expect(parsed).toStrictEqual(result);
 	});
 });
