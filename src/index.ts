@@ -386,7 +386,9 @@ export async function parse(rule: Rule, value: any = undefined) {
 }
 
 function normalizeMaybeMethod<T>(maybeMethod: MaybeMethod<T>, value: any, _value: any) {
-	return typeof maybeMethod === 'function' ? (maybeMethod as Function)(value, _value) : maybeMethod;
+	return typeof maybeMethod === 'function'
+		? (maybeMethod as (value: any, _value: any) => T)(value, _value)
+		: maybeMethod;
 }
 
 function normalizeUndefinedOrMethod<T>(

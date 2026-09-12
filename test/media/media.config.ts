@@ -140,7 +140,9 @@ export const config: Rule = {
 function normalizeUrl(path: string, url: string) {
 	try {
 		return new URL(path).toString();
-	} catch {}
+	} catch {
+		// path is relative, fall back to resolving it against url's origin
+	}
 
 	return new URL(url).origin + path;
 }
