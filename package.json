@@ -10,7 +10,8 @@
 		"changeset": "changeset",
 		"lint": "eslint --ignore-path .gitignore .",
 		"prettier": "prettier --write .",
-		"test": "vitest run --disable-console-intercept"
+		"test": "vitest run --disable-console-intercept",
+		"typecheck": "tsc --noEmit"
 	},
 	"repository": {
 		"type": "git",

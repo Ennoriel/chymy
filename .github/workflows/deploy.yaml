@@ -41,6 +41,12 @@ jobs:
       - name: 🔨 Install dependencies
         run: pnpm install
 
+      - name: 🔨 Lint project
+        run: pnpm lint
+
+      - name: 🔨 Typecheck project
+        run: pnpm typecheck
+
       - name: 🔨 Test project
         run: pnpm test
 
