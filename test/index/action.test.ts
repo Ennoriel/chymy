@@ -3,11 +3,6 @@ import { mkdirSync } from 'node:fs';
 import { decodeArrayBuffer, parse } from '../../src';
 import { html } from './data';
 
-const mockFetch = {
-	clone: () => mockFetch,
-	arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
-};
-
 vi.mock('node:fs', async (importOriginal) => ({
 	...(await importOriginal<typeof import('node:fs')>()),
 	mkdirSync: vi.fn().mockImplementation(() => ''),

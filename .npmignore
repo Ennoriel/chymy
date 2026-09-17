@@ -3,11 +3,9 @@
 /coverage
 /src
 /test
-eslint.config.js
+biome.json
 .gitignore
 .npmignore
-.prettierignore
-.prettierrc.json
 jest.config.js
 pnpm-lock.yaml
 tsconfig.json
