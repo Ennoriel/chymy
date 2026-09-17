@@ -179,9 +179,7 @@ export class Chain<T = any, S = T> implements PromiseLike<T> {
 	}
 
 	// html
-	htmlQuerySelector(
-		selector: MaybeAccessor<T, string>
-	): Chain<HTMLElement | null | undefined, S> {
+	htmlQuerySelector(selector: MaybeAccessor<T, string>): Chain<HTMLElement | null | undefined, S> {
 		return this.addStep((value: HTMLElement | undefined, rootValue) =>
 			value?.querySelector(resolveAccessor(selector, value as T, rootValue))
 		);
@@ -278,6 +276,10 @@ export class Chain<T = any, S = T> implements PromiseLike<T> {
 		});
 	}
 
+	// `discardPreviousSteps: true` must be passed as a literal at the call site for this
+	// overload to be picked. TypeScript resolves overloads using the *declared* type of the
+	// argument, so passing it through a variable (`const opts = { discardPreviousSteps: true }`)
+	// widens `true` to `boolean` and silently falls through to the merge-with-input overload below.
 	record<F extends RecordFields<T>>(
 		fields: F,
 		options: RecordOptions & { discardPreviousSteps: true }
