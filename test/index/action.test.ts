@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { mkdirSync } from 'node:fs';
 import { decodeArrayBuffer, parse } from '../../src';
 import { html } from './data';
 
@@ -9,6 +10,7 @@ const mockFetch = {
 
 vi.mock('node:fs', async (importOriginal) => ({
 	...(await importOriginal<typeof import('node:fs')>()),
+	mkdirSync: vi.fn().mockImplementation(() => ''),
 	writeFileSync: vi.fn().mockImplementation(() => '')
 }));
 
@@ -68,6 +70,12 @@ describe('action', () => {
 		const value = '12azert34';
 		const expected = value;
 		expect(await parse(value).writeFile('./test/index/action.txt')).toStrictEqual(expected);
+	});
+
+	it('write-file - creates missing folders', async () => {
+		const value = '12azert34';
+		await parse(value).writeFile('./test/tmp/nested/dir/action.txt');
+		expect(mkdirSync).toHaveBeenCalledWith('./test/tmp/nested/dir', { recursive: true });
 	});
 
 	it('log', async () => {

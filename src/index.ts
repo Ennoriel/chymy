@@ -1,4 +1,5 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { HTMLElement, parse as htmlParse } from 'node-html-parser';
 import { xml2js, type ElementCompact as _ElementCompact } from 'xml-js';
 import { sleep } from 'chyme';
@@ -157,7 +158,9 @@ export class Chain<T = any, S = T> implements PromiseLike<T> {
 
 	writeFile(path: MaybeAccessor<T, string>): Chain<T, S> {
 		return this.addStep((value, rootValue) => {
-			writeFileSync(resolveAccessor(path, value, rootValue), value);
+			const resolvedPath = resolveAccessor(path, value, rootValue);
+			mkdirSync(dirname(resolvedPath), { recursive: true });
+			writeFileSync(resolvedPath, value);
 			return value;
 		});
 	}
@@ -248,6 +251,37 @@ export class Chain<T = any, S = T> implements PromiseLike<T> {
 
 	mergeWithInput(): Chain<S & T, S> {
 		return this.addStep((value) => ({ ...this.seed, ...value }));
+	}
+
+	// array
+	sort<Item>(
+		this: Chain<Item[] | null | undefined, S>,
+		compareFn?: (a: Item, b: Item) => number
+	): Chain<Item[] | undefined, S> {
+		return this.addStep((value: Item[] | null | undefined) => value?.slice().sort(compareFn));
+	}
+
+	dedupe<Item>(
+		this: Chain<Item[] | null | undefined, S>,
+		key?: (item: Item) => unknown
+	): Chain<Item[] | undefined, S> {
+		return this.addStep((value: Item[] | null | undefined) => {
+			if (!value) return undefined;
+			const seen = new Set<unknown>();
+			return value.filter((item) => {
+				const k = key ? key(item) : item;
+				if (seen.has(k)) return false;
+				seen.add(k);
+				return true;
+			});
+		});
+	}
+
+	flat<Item, D extends number = 1>(
+		this: Chain<Item[] | null | undefined, S>,
+		depth?: D
+	): Chain<FlatArray<Item[], D>[] | undefined, S> {
+		return this.addStep((value: Item[] | null | undefined) => value?.flat(depth));
 	}
 
 	// meta
