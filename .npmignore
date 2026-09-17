@@ -3,8 +3,7 @@
 /coverage
 /src
 /test
-.eslintignore
-.eslintrc.js
+eslint.config.js
 .gitignore
 .npmignore
 .prettierignore
