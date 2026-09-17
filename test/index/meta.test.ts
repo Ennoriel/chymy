@@ -5,9 +5,7 @@ describe('meta', () => {
 	it('iterate', async () => {
 		const value = [1, 2, 3];
 		const result = [2, 4, 6];
-		expect(await parse(value).iterate((item) => item.project((v) => v * 2))).toStrictEqual(
-			result
-		);
+		expect(await parse(value).iterate((item) => item.project((v) => v * 2))).toStrictEqual(result);
 	});
 
 	it('iterate - recursive with initial value', async () => {
@@ -107,9 +105,9 @@ describe('meta', () => {
 	it('first-non-null first element non null', async () => {
 		const value = { name: 'John', age: 42 };
 		const result = 'John';
-		expect(
-			await parse(value).firstNonNull([(v) => v.project((x) => x.name)])
-		).toStrictEqual(result);
+		expect(await parse(value).firstNonNull([(v) => v.project((x) => x.name)])).toStrictEqual(
+			result
+		);
 	});
 
 	it('first-non-null last element non null', async () => {

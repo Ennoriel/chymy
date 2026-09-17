@@ -54,7 +54,11 @@ describe('string', () => {
 	it('parse-as-xml with get method', async () => {
 		const value = { xml };
 		const result = parsedXml;
-		expect(await parse(value).project((v) => v.xml).parseAsXml()).toStrictEqual(result);
+		expect(
+			await parse(value)
+				.project((v) => v.xml)
+				.parseAsXml()
+		).toStrictEqual(result);
 	});
 
 	it('parse-as-json', async () => {
