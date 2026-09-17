@@ -5,7 +5,11 @@ export function parseMedias(medias: Array<{ name: string; url: string }>) {
 		.iterate((item) => item.record({ homepage: (v) => v.download((x) => x.url) }))
 		.iterate((item) =>
 			item.record({
-				homepage_html: (v) => v.project((x) => x.homepage).parseToHtml()
+				homepage_html: (v) =>
+					v
+						.project((x) => x.homepage)
+						.responseDecode()
+						.parseToHtml()
 			})
 		)
 		.iterate(
