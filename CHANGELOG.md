@@ -1,5 +1,11 @@
 # chymy
 
+## 1.0.0
+
+### Major Changes
+
+- Release v1.0 of the library. Library converted to be chained calls instead of a big configuration file.
+
 ## 0.3.0
 
 ### Minor Changes
